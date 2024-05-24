@@ -24,7 +24,19 @@ namespace EcomMS.BLL.ServiceAccess
         public SupplierService SupplierService { get; set; }
         public BusinessService(IUnitOfWork unitOfWork)
         {
-            
+            CartService = new CartService(unitOfWork);
+            CategoryService = new CategoryService(unitOfWork);
+            CustomerService = new CustomerService(unitOfWork);
+            EmployeeService = new EmployeeService(unitOfWork);
+            OrderProductService = new OrderProductService(unitOfWork);
+            OrderService = new OrderService(unitOfWork);
+            OrderStatusHistoryService = new OrderStatusHistoryService(unitOfWork);
+            ProductImageService = new ProductImageService(unitOfWork);
+            ProductService = new ProductService(unitOfWork);
+            ReviewService = new ReviewService(unitOfWork);
+            SupplierProductService = new SupplierProductService(unitOfWork);
+            SupplierService = new SupplierService(unitOfWork);
+
         }
     }
 }
