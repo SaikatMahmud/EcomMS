@@ -1,47 +1,41 @@
-﻿@model IEnumerable<EcomMS.BLL.DTOs.CategoryDTO>
+﻿<body onload="LoadCategoryList()">
+    <div class="col-6">
+        <h2>Category List</h2>
+    </div>
+    <div>
+        <div class="row pt-4 pb-3">
+            <div class="col-6 text-begin">
+                <a asp-controller="Category" asp-action="Create" class="btn btn-success"><i class="bi bi-plus-circle"></i> Add New</a>
+            </div>
+            <div class="col-6 text-end">
+                <form id="CategoryExcelUpload" enctype="multipart/form-data">
+                    <label class="fw-bold" style="text-align: left;">Import Catagories (Bulk)</label>
+                    <div class="row">
+                        <div class="col-11 text-end">
+                            <input type="file" id="inputFile" class="form-control" />
+                        </div>
+                        <div class="col-1 text-begin">
+                            <input type="button" value="Upload" onclick="UploadCategories()" class="btn btn-success" />
+                        </div>
+                    </div> 
+                </form>
+            </div>
+        </div>     
+    </div>
 
-@{
-    ViewData["Title"] = "Index";
-}
 
-<h1>Index</h1>
+    <div>
+        <table id="tblData" class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Category Id</th>
+                    <th>Category Name</th>
+                    <th></th>
+                </tr>
+            </thead>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+        </table>
+    </div>
+</body>
+<script src="~/js/loadCategoryList.js"></script>
+<script src="~/js/uploadCategories.js"></script>

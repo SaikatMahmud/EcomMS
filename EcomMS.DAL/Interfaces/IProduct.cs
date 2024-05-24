@@ -10,5 +10,7 @@ namespace EcomMS.DAL.Interfaces
     public interface IProduct : IRepo<Product>
     {
         //any extra functionality here if needed
+        Task<(bool success, string? error)> UploadBulk(List<Product> products);
+
     }
 }

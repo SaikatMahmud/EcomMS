@@ -15,5 +15,11 @@ namespace EcomMS.DAL.Repos
         {
             _db = db;
         }
+        public async Task<(bool success, string? error)> UploadBulk(List<Product> products)
+        {
+            await _db.Products.AddRangeAsync(products);
+            await _db.SaveChangesAsync();
+            return (true, null);
+        }
     }
 }

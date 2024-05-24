@@ -103,15 +103,16 @@ namespace EcomMS.BLL.Services
             var Category = mapper.Map<Category>(obj);
             return DataAccess.Category.Create(Category);
         }
-        //public bool Update(CategoryDTO obj)
-        //{
-        //    var existingData = DataAccess.Category.Get(c => c.Id == obj.Id);
-        //    if (existingData != null)
-        //    {
-        //        existingData.Name = obj.Name;
-        //    }
-        //    return DataAccess.Category.Update(existingData);
-        //}
+        public bool Update(CategoryDTO obj)
+        {
+            var existingData = DataAccess.Category.Get(c => c.Id == obj.Id);
+            if (existingData != null)
+            {
+                existingData.Name = obj.Name;
+                existingData.Description = obj.Description;
+            }
+            return DataAccess.Category.Update(existingData);
+        }
         public bool Delete(int Id)
         {
             var data = DataAccess.Category.Get(c => c.Id == Id);
