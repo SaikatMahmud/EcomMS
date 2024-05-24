@@ -19,4 +19,9 @@
     <ProjectReference Include="..\EcomMS.DAL\EcomMS.DAL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Services\" />
+    <Folder Include="ServiceAccess\" />
+  </ItemGroup>
+
 </Project>

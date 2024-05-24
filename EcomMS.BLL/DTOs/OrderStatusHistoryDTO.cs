@@ -1,22 +1,21 @@
-﻿using System;
+﻿using EcomMS.DAL.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EcomMS.DAL.Models
+namespace EcomMS.BLL.DTOs
 {
-    public class OrderStatusHistory
+    public class OrderStatusHistoryDTO
     {
         public int Id { get; set; }
         public int OrderId { get; set; }
         public string Status { get; set; }
         public int? CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }
-        [ForeignKey("OrderId")]
-        public virtual Order Order { get; set; }
-        [ForeignKey("CreatedBy")]
-        public virtual Employee Employee { get; set; }
+        public OrderDTO Order { get; set; }
+        public EmployeeDTO Employee { get; set; }
     }
 }

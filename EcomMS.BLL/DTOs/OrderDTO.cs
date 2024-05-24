@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+﻿using EcomMS.DAL.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EcomMS.DAL.Models
+namespace EcomMS.BLL.DTOs
 {
-    public class Order
+    public class OrderDTO
     {
         public int Id { get; set; }
         public int CustomerId { get; set; }
@@ -20,9 +20,7 @@ namespace EcomMS.DAL.Models
         public bool IsReviewed { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
-        [ForeignKey("CustomerId")]
-        public virtual Customer Customer { get; set; }
-        public virtual ICollection<OrderStatusHistory> OrderStatusHistories { get; set; }
+        public CustomerDTO Customer { get; set; }
 
 
     }
