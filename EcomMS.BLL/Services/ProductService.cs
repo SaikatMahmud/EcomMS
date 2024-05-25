@@ -23,7 +23,7 @@ namespace EcomMS.BLL.Services
         }
         public List<ProductImageMapDTO> Get(string? properties = null)
         {
-            var data = DataAccess.Product.Get(properties);
+            var data = DataAccess.Product.GetAll(properties);
             if (data != null)
             {
                 var cfg = new MapperConfiguration(c =>

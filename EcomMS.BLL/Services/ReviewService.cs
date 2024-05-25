@@ -21,7 +21,7 @@ namespace EcomMS.BLL.Services
         }
         public List<ReviewDTO> Get(string? properties = null)
         {
-            var data = DataAccess.Review.Get(properties);
+            var data = DataAccess.Review.GetAll(properties);
             if (data != null)
             {
                 var cfg = new MapperConfiguration(c =>

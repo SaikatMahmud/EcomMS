@@ -1,4 +1,5 @@
 ﻿using EcomMS.DAL.Models;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -14,7 +15,9 @@ namespace EcomMS.BLL.DTOs
         public int CustomerId { get; set; }
         public int ProductId { get; set; }
         public int Quantity { get; set; }
+        [ValidateNever]
         public CustomerDTO Customer { get; set; }
+        [ValidateNever]
         public ProductDTO Product { get; set; }
     }
 }

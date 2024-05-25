@@ -21,7 +21,7 @@ namespace EcomMS.BLL.Services
         }
         public List<CartDTO> Get(string? properties = null)
         {
-            var data = DataAccess.Cart.Get(properties);
+            var data = DataAccess.Cart.GetAll(properties);
             if (data != null)
             {
                 var cfg = new MapperConfiguration(c =>
@@ -76,22 +76,60 @@ namespace EcomMS.BLL.Services
             return null;
         }
 
-        public CartDTO Get(Expression<Func<CartDTO, bool>> filter, string? properties = null)
+        public List<CartProductImagesDTO> GetCartWithProduct(Expression<Func<CartDTO, bool>> filter, string? properties = null)
         {
             var cfg = new MapperConfiguration(c =>
             {
                 c.CreateMap<Cart, CartDTO>();
+                c.CreateMap<Cart, CartProductImagesDTO>();
+                c.CreateMap<Product, ProductImageMapDTO>();
+                c.CreateMap<ProductImage, ProductImageDTO>();
             });
 
             var mapper = new Mapper(cfg);
             var cartFilter = mapper.MapExpression<Expression<Func<Cart, bool>>>(filter);
 
-            var data = DataAccess.Cart.Get(cartFilter, properties);
+            var data = DataAccess.Cart.GetAll(cartFilter, properties);
             if (data != null)
             {
-                return mapper.Map<CartDTO>(data);
+                return mapper.Map<List<CartProductImagesDTO>>(data);
             }
             return null;
+        }
+        public List<CartDTO> GetAll(Expression<Func<CartDTO, bool>> filter, string? properties = null)
+        {
+            var cfg = new MapperConfiguration(c =>
+            {
+                c.CreateMap<Cart, CartDTO>();
+                c.CreateMap<Product, ProductDTO>();
+            });
+
+            var mapper = new Mapper(cfg);
+            var cartFilter = mapper.MapExpression<Expression<Func<Cart, bool>>>(filter);
+
+            var data = DataAccess.Cart.GetAll(cartFilter, properties);
+            if (data != null)
+            {
+                return mapper.Map<List<CartDTO>>(data);
+            }
+            return null;
+        }
+        public bool AddItemToCart(CartDTO obj, out string msg)
+        {
+            msg = "";
+            var currentCart = DataAccess.Cart.Get(c => c.ProductId == obj.ProductId && c.CustomerId == obj.CustomerId);
+            if (currentCart != null)
+            {
+                currentCart.Quantity += obj.Quantity;
+                DataAccess.Cart.Update(currentCart);
+                msg = $"{currentCart.Quantity} of this product in cart now!";
+            }
+            else
+            {
+                Create(obj);
+                msg = $"{obj.Quantity} of this product added in cart!";
+            }
+            return true;
         }
         public bool Create(CartDTO obj)
         {
@@ -103,6 +141,28 @@ namespace EcomMS.BLL.Services
             var Cart = mapper.Map<Cart>(obj);
             return DataAccess.Cart.Create(Cart);
         }
+        public bool Deduct(int cartId)
+        {
+            var existingData = DataAccess.Cart.Get(c => c.Id == cartId);
+            if (existingData.Quantity != 1)
+            {
+                existingData.Quantity -= 1;
+                var result = DataAccess.Cart.Update(existingData);
+            }
+            return true;
+        }
+        public bool Increase(int cartId)
+        {
+            var existingData = DataAccess.Cart.Get(c => c.Id == cartId);
+            if (existingData.Quantity < 5)
+            {
+                existingData.Quantity += 1;
+                var result = DataAccess.Cart.Update(existingData);
+            }
+            return true;
+        }
+
+
         //public bool Update(CartDTO obj)
         //{
         //    var existingData = DataAccess.Cart.Get(c => c.Id == obj.Id);

@@ -21,7 +21,7 @@ namespace EcomMS.BLL.Services
         }
         public List<OrderStatusHistoryDTO> Get(string? properties = null)
         {
-            var data = DataAccess.OrderStatusHistory.Get(properties);
+            var data = DataAccess.OrderStatusHistory.GetAll(properties);
             if (data != null)
             {
                 var cfg = new MapperConfiguration(c =>

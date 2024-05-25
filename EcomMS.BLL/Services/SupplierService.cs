@@ -21,7 +21,7 @@ namespace EcomMS.BLL.Services
         }
         public List<SupplierDTO> Get(string? properties = null)
         {
-            var data = DataAccess.Supplier.Get(properties);
+            var data = DataAccess.Supplier.GetAll(properties);
             if (data != null)
             {
                 var cfg = new MapperConfiguration(c =>

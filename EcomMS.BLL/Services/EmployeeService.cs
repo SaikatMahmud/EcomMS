@@ -21,7 +21,7 @@ namespace EcomMS.BLL.Services
         }
         public List<EmployeeDTO> Get(string? properties = null)
         {
-            var data = DataAccess.Employee.Get(properties);
+            var data = DataAccess.Employee.GetAll(properties);
             if (data != null)
             {
                 var cfg = new MapperConfiguration(c =>
