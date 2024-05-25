@@ -119,16 +119,16 @@ namespace EcomMS.BLL.Services
             return DataAccess.Category.Delete(data);
         }
 
-        //public async Task<bool> UploadFromExcel(Stream stream)
-        //{
-        //    var data = DataUploadService.ParseCategoryData(stream);
-        //    if (data != null)
-        //    {
-        //        var result = await DataAccess.Category.UploadBulk(data);
-        //        if (result.success) return true;
-        //    }
-        //    return false;
+        public async Task<bool> UploadFromExcel(Stream stream)
+        {
+            var data = DataUploadService.ParseCategoryData(stream);
+            if (data != null)
+            {
+                var result = await DataAccess.Category.UploadBulk(data);
+                if (result.success) return true;
+            }
+            return false;
 
-        //}
+        }
     }
 }

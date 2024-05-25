@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace EcomMS.DAL.Models
 {
@@ -20,6 +21,7 @@ namespace EcomMS.DAL.Models
         public int? CategoryId { get; set; }
         [ForeignKey("CategoryId")]
         public virtual Category Category { get; set; }
+        public virtual ICollection<ProductImage> Images { get; set; }
 
 
     }

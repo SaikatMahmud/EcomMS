@@ -53,7 +53,12 @@ namespace EcomMS.Web.Controllers
                 return View(ct);
             }
             var result = categoryService.Update(ct);
-            TempData["success"] = "Category updated successfully!";
+            if (result)
+            {
+                TempData["success"] = "Category updated successfully!";
+                return RedirectToAction("Index");
+            }
+            else TempData["error"] = "Could not updated. Server error!";
             return RedirectToAction("Index");
         }
 
@@ -86,5 +91,13 @@ namespace EcomMS.Web.Controllers
             return Json(new { success = true, msg = "Category deleted!" });
         }
 
+        [HttpPost]
+        public async Task<IActionResult> UploadCategoryBulk(IFormFile file)
+        {
+            if (file == null) return Json(new { msg = "No file provided!" });
+            var result = await categoryService.UploadFromExcel(file.OpenReadStream());
+            if (result) return Json(new { success = true, msg = "Categories uploaded" });
+            return Json(new { success = false, msg = "Error! Could not upload categories!" });
+        }
     }
 }

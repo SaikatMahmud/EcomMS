@@ -1,11 +1,11 @@
 ﻿var datatable;
-function LoadCategoryList() {
+function LoadProductList() {
     datatable = $('#tblData').DataTable({
         "processing": true,
         "serverSide": true,
         "cache": false,
         "ajax": {
-            "url": "/Category/GetAllCustomized",
+            "url": "/Product/GetAllCustomized",
             "type": "GET",
             "data": function (d) {
                 d.search = d.search.value;
@@ -15,24 +15,20 @@ function LoadCategoryList() {
             { "className": "dt-center", "targets": "_all" }
         ],
         "language": {
-            "searchPlaceholder": "search for category"
+            "searchPlaceholder": "search for product"
         },
         "columns": [
             { data: 'id', width: '3%', "className": "dt-right" },
             { data: 'name', width: '15%' },
-            //{
-            //    data: 'id', width: '5%', render: function (data, type, row, meta) {
-            //        return type === 'display' ?
-            //            '<button type="button" onclick="Edit(' + data + ')" class="btn btn-warning">Edit</button>' +
-            //            '<button type="button" onclick="Delete(' + data + ')" class="btn btn-danger"> Delete</button>' : data;
-            //    }
-            //},
+            { data: 'price', width: '8%' },
+            { data: 'quantity', width: '5%' },
+            { data: 'category.name', width: '10%' },
             {
                 data: 'id',
                 render: function (data) {
                     return `<div class="w-75 btn-group" role="group">
-                    <button type="button" onclick="EditCat(${data})" class="btn btn-warning mx-1"><i class="bi bi-pencil-square"></i></button>
-                    <button type="button" onclick="DeleteCat(${data})" class="btn btn-danger mx-1"><i class="bi bi-trash"></i></button>
+                    <button type="button" onclick="EditProduct(${data})" class="btn btn-warning mx-1"><i class="bi bi-pencil-square"></i></button>
+                    <button type="button" onclick="DeleteProduct(${data})" class="btn btn-danger mx-1"><i class="bi bi-trash"></i></button>
                     </div>`
                 },
                 width: '2%'
@@ -41,12 +37,12 @@ function LoadCategoryList() {
     });
 
 }
-function EditCat(id) {
+function EditProduct(id) {
     console.log("executed");
-    window.location.href = "/Category/Edit/" + id;
+    window.location.href = "/Product/Edit/" + id;
 }
 
-function DeleteCat(id) {
+function DeleteProduct(id) {
     Swal.fire({
         title: "Are you sure?",
         text: "You won't be able to revert this!",
@@ -58,7 +54,7 @@ function DeleteCat(id) {
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: '/Category/Delete/' + id,
+                url: '/Product/Delete/' + id,
                 type: 'DELETE',
                 success: function (response) {
                     debugger;

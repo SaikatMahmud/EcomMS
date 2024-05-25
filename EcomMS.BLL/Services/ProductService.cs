@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.Extensions.ExpressionMapping;
+using DocumentFormat.OpenXml.Vml;
 using EcomMS.BLL.DTOs;
 using EcomMS.DAL.Models;
 using EcomMS.DAL.UnitOfWork;
@@ -9,6 +10,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace EcomMS.BLL.Services
 {
@@ -45,6 +47,7 @@ namespace EcomMS.BLL.Services
                 var cfg = new MapperConfiguration(c =>
                 {
                     c.CreateMap<Product, ProductDTO>();
+                    c.CreateMap<Category, CategoryDTO>();
                 });
                 var mapper = new Mapper(cfg);
                 totalCount = data.Item2;
@@ -60,6 +63,7 @@ namespace EcomMS.BLL.Services
             var cfg = new MapperConfiguration(c =>
             {
                 c.CreateMap<Product, ProductDTO>();
+                c.CreateMap<Category, CategoryDTO>();
             });
             var mapper = new Mapper(cfg);
             var productFilter = mapper.MapExpression<Expression<Func<Product, bool>>>(filter);
@@ -81,6 +85,8 @@ namespace EcomMS.BLL.Services
             var cfg = new MapperConfiguration(c =>
             {
                 c.CreateMap<Product, ProductDTO>();
+                c.CreateMap<Product, ProductImageMapDTO>();
+                c.CreateMap<ProductImage, ProductImageDTO>();
             });
 
             var mapper = new Mapper(cfg);
@@ -89,7 +95,7 @@ namespace EcomMS.BLL.Services
             var data = DataAccess.Product.Get(productFilter, properties);
             if (data != null)
             {
-                return mapper.Map<ProductDTO>(data);
+                return mapper.Map<ProductImageMapDTO>(data);
             }
             return null;
         }
@@ -103,19 +109,36 @@ namespace EcomMS.BLL.Services
             var Product = mapper.Map<Product>(obj);
             return DataAccess.Product.Create(Product);
         }
-        //public bool Update(ProductDTO obj)
-        //{
-        //    var existingData = DataAccess.Product.Get(c => c.Id == obj.Id);
-        //    if (existingData != null)
-        //    {
-        //        existingData.Name = obj.Name;
-        //    }
-        //    return DataAccess.Product.Update(existingData);
-        //}
+        public bool Update(ProductDTO obj)
+        {
+            var existingData = DataAccess.Product.Get(c => c.Id == obj.Id);
+            if (existingData != null)
+            {
+                existingData.Name = obj.Name;
+                existingData.Price = obj.Price;
+                existingData.Quantity = obj.Quantity;
+                existingData.Description = obj.Description;
+                existingData.Specification = obj.Specification;
+                existingData.CategoryId = obj.CategoryId;
+            }
+            return DataAccess.Product.Update(existingData);
+        }
         public bool Delete(int Id)
         {
             var data = DataAccess.Product.Get(c => c.Id == Id);
             return DataAccess.Product.Delete(data);
+        }
+
+        public async Task<bool> UploadFromExcel(Stream stream)
+        {
+            var data = DataUploadService.ParseProductData(stream);
+            if (data != null)
+            {
+                var result = await DataAccess.Product.UploadBulk(data);
+                if (result.success) return true;
+            }
+            return false;
+
         }
 
     }

@@ -1,0 +1,44 @@
+﻿<body onload="LoadProductList()">
+    <div class="col-6">
+        <h2>Product List</h2>
+    </div>
+    <div>
+        <div class="row pt-4 pb-3">
+            <div class="col-6 text-begin">
+                <a asp-controller="Product" asp-action="Create" class="btn btn-success"><i class="bi bi-plus-circle"></i> Add New</a>
+            </div>
+            <div class="col-6 text-end">
+                <form id="ProductExcelUpload" enctype="multipart/form-data">
+                    <label class="fw-bold" style="text-align: left;">Import Product (Bulk)</label>
+                    <div class="row">
+                        <div class="col-11 text-end">
+                            <input type="file" id="inputFile" class="form-control" />
+                        </div>
+                        <div class="col-1 text-begin">
+                            <input type="button" value="Upload" onclick="UploadProducts()" class="btn btn-success" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <div>
+        <table id="tblData" class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Product Id</th>
+                    <th>Product Name</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Category</th>
+                    <th></th>
+                </tr>
+            </thead>
+
+        </table>
+    </div>
+</body>
+<script src="~/js/loadProductList.js"></script>
+<script src="~/js/uploadProducts.js"></script>
