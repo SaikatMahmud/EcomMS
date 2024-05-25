@@ -56,5 +56,35 @@ namespace EcomMS.Web.Controllers
             TempData["success"] = "Category updated successfully!";
             return RedirectToAction("Index");
         }
+
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return View();
+        }
+        [HttpPost]
+        public IActionResult Create(CategoryDTO ct)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(ct);
+            }
+            var result = categoryService.Create(ct);
+            if (result)
+            {
+                TempData["success"] = "Category added successfully!";
+                return RedirectToAction("Index");
+            }
+            else TempData["error"] = "Could not added. Server error!";
+            return RedirectToAction("Index");
+        }
+        [HttpDelete]
+        public IActionResult Delete(int id)
+        {
+            var result = categoryService.Delete(id);
+            if (!result) return Json(new { success= false, msg = "Delete failed. Category not found!" });
+            return Json(new { success = true, msg = "Category deleted!" });
+        }
+
     }
 }
