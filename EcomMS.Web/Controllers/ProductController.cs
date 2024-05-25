@@ -22,7 +22,7 @@ namespace EcomMS.Web.Controllers
             return View();
         }
         [HttpGet]
-        public IActionResult GetAllCustomized(int draw, int start, int length, string search)
+        public IActionResult GetAllCustomized(int draw, int start, int length, string search, int orderColumn, string orderDirection)
         {
             int totalCount = 0;
             int filteredCount = 0;
@@ -95,6 +95,66 @@ namespace EcomMS.Web.Controllers
             var result = await productService.UploadFromExcel(file.OpenReadStream());
             if (result) return Json(new { success = true, msg = "Categories uploaded" });
             return Json(new { success = false, msg = "Error! Could not upload categories!" });
+        }
+
+        [HttpGet]
+        public IActionResult Create()
+        {
+            IEnumerable<SelectListItem> catList = categoryService.Get().Select(c => new SelectListItem
+            {
+                Text = c.Name,
+                Value = c.Id.ToString(),
+            });
+            ViewBag.catList = catList;
+            return View();
+        }
+        [HttpPost]
+        public IActionResult Create(ProductDTO product)
+        {
+            if (!ModelState.IsValid)
+            {
+           
+                return View(product);
+            }
+            var result = productService.Create(product);
+            if (result)
+            {
+                TempData["success"] = "Product added successfully!";
+                return RedirectToAction("Index");
+            }
+            else TempData["error"] = "Could not added. Server error!";
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        [Route("Product/ImageUpload/{id}")]
+        public IActionResult ImageUpload(int id, IFormFile file)
+        {
+            if (id == 0 || file == null) return Json(new { success = false, msg = "No file provided or invalid product!" }) ;
+            var data = productService.Get(i => i.Id == id);
+            if (data == null) return Json(new { success = false, msg = "Invalid product!" });
+            string wwwRootPath = webHostEnvironment.WebRootPath;
+            string imagePath = Path.Combine(wwwRootPath, @"uploads\images\products");
+            string imageName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+            using (var fileStream = new FileStream(Path.Combine(imagePath, imageName), FileMode.Create))
+            {
+                file.CopyTo(fileStream);
+            }
+            productService.UploadImage(id, @"\uploads\images\products\" + imageName);
+            return Json(new { success = true, msg = "Image uploaded!"});
+        }
+
+        [HttpDelete]
+        // [Route("Item/ImageUpload/{id}")]
+        public IActionResult DeleteImage(int id)
+        {
+            var imageUrl = productService.DeleteImage(id);
+            var imagePath = Path.Combine(webHostEnvironment.WebRootPath, imageUrl.TrimStart('\\')); // remove leading backslash
+            if (System.IO.File.Exists(imagePath))
+            {
+                System.IO.File.Delete(imagePath);
+            }
+            return Json(new { success = true, msg = "Image deleted!" });
         }
     }
 }

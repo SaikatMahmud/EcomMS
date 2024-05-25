@@ -9,6 +9,8 @@ function LoadProductList() {
             "type": "GET",
             "data": function (d) {
                 d.search = d.search.value;
+                d.orderColumn = d.order[0].column;
+                d.orderDirection = d.order[0].dir;
             }
         },
         "columnDefs": [

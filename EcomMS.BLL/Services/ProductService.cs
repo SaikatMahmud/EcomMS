@@ -80,7 +80,7 @@ namespace EcomMS.BLL.Services
             return null;
         }
 
-        public ProductDTO Get(Expression<Func<ProductDTO, bool>> filter, string? properties = null)
+        public ProductImageMapDTO Get(Expression<Func<ProductDTO, bool>> filter, string? properties = null)
         {
             var cfg = new MapperConfiguration(c =>
             {
@@ -140,6 +140,22 @@ namespace EcomMS.BLL.Services
             return false;
 
         }
+        public bool UploadImage(int Id, string ImageUrl)
+        {
+            var obj = new ProductImage()
+            {
+                ProductId = Id,
+                ImageUrl = ImageUrl,
+            };
+            return DataAccess.ProductImage.Create(obj);
+        }
+        public string DeleteImage(int ImageId)
+        {
+            var data = DataAccess.ProductImage.Get(c => c.Id == ImageId);
+            DataAccess.ProductImage.Delete(data);
+            return data.ImageUrl;
+        }
+
 
     }
 }

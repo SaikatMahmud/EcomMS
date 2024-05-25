@@ -22,4 +22,8 @@
     <ProjectReference Include="..\EcomMS.BLL\EcomMS.BLL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\uploads\images\products\" />
+  </ItemGroup>
+
 </Project>

@@ -1,52 +1,83 @@
-﻿@model ProductDTO
+﻿@model ProductImageMapDTO
+<div class="row">
+    <div class="col-8">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="border p-3 mt-4">
+                <div class="row pb-2">
+                    <h2>Edit Product</h2>
+                    <hr />
 
-<form asp-action="Edit">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <div class="border p-3 mt-4">
-        <div class="row pb-2">
-            <h2> Edit Product</h2>
-            <hr />
-
-            <div class="mb-3">
-                <label asp-for="Id" class="control-label"></label>
-                <input asp-for="Id" disabled class="form-control" />
+                    <div class="mb-3">
+                        <label asp-for="Id" class="control-label"></label>
+                        <input asp-for="Id" disabled class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Name" class="control-label"></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Price" class="control-label"></label>
+                        <input asp-for="Price" class="form-control" />
+                        <span asp-validation-for="Price" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Quantity" class="control-label"></label>
+                        <input asp-for="Quantity" class="form-control" />
+                        <span asp-validation-for="Quantity" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Description" class="control-label"></label>
+                        <textarea asp-for="Description" class="form-control"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Specification" class="control-label"></label>
+                        <textarea asp-for="Specification" class="form-control"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label>Category</label>
+                        <select id="CategoryId" asp-for="CategoryId" asp-items="ViewBag.catList" class="form-select">
+                            <option disabled selected>Select Category</option>
+                        </select>
+                        <span asp-validation-for="CategoryId" class="text-danger"></span>
+                    </div>
+                </div>
             </div>
-            <div class="mb-3">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="mb-3">
-                <label asp-for="Price" class="control-label"></label>
-                <input asp-for="Price" class="form-control" />
-                <span asp-validation-for="Price" class="text-danger"></span>
-            </div>
-            <div class="mb-3">
-                <label asp-for="Quantity" class="control-label"></label>
-                <input asp-for="Quantity" class="form-control" />
-                <span asp-validation-for="Quantity" class="text-danger"></span>
-            </div>
-            <div class="mb-3">
-                <label asp-for="Description" class="control-label"></label>
-                <textarea asp-for="Description" class="form-control"></textarea>
-            </div>
-            <div class="mb-3">
-                <label asp-for="Specification" class="control-label"></label>
-                <textarea asp-for="Specification" class="form-control"></textarea>
-            </div>
-            <div class="mb-3">
-                <label>Category</label>
-                <select id="CategoryId" asp-for="CategoryId" asp-items="ViewBag.catList" class="form-select">
-                    <option disabled selected>Select Category</option>
-                </select>
-                <span asp-validation-for="CategoryId" class="text-danger"></span>
-            </div>
-        </div>
+            <input type="submit" value="Save" class="btn btn-success" />
+            <a asp-controller="Product" asp-action="Index" class="btn btn-info">Back to List</a>
+        </form>
     </div>
-    <input type="submit" value="Save" class="btn btn-success" />
-    <a asp-controller="Category" asp-action="Index" class="btn btn-info">Back to List</a>
-</form>
+    <div class="col-4">
 
+        <form id="ProductImageUpload" enctype="multipart/form-data">
+            <label>Upload an image</label>
+            <input id="Id" asp-for="Id" hidden />
+            <div class="row">
+                <div class="col-11 text-begin">
+                    <input type="file" id="inputFile" class="form-control" />
+                </div>
+                <div class="col-1 text-end">
+                    <input type="button" value="Upload" onclick="UploadProductImage(@Model.Id)" class="btn btn-success" />
+                </div>
+            </div>
+        </form>
+        <h3>Image(s)</h3>
+        <hr />
+        @foreach (var image in Model.Images)
+        {
+            <div class="row">
+                <div class="col-11 text-begin">
+                    <img src="@image.ImageUrl" width="100%" class="mx-1" />
+                </div>
+                <div class="col-1 text-end">
+                    <button type="button" onclick="DeleteProductImage(@image.Id)" class="btn btn-danger"><i class="bi bi-trash"></i></button>
+                </div>
+            </div>
+            <br />
+        }
+    </div>
+</div>
 
 
 
@@ -58,6 +89,7 @@
             toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | align lineheight | numlist bullist indent outdent | emoticons charmap',
         });
     </script>
+    <script src="~/js/handleProductImage.js"></script>
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
