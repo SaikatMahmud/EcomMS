@@ -1,0 +1,87 @@
+﻿@model ProductImageMapDTO
+
+<form method="post" action="Cart/Add">
+    <input value="@Model.Id" name="ProductId" hidden />
+    <input value="@Model.Price" name="ProductPrice" hidden />
+    <div class="card shadow border-0 mt-4">
+        <div class="card-header bg-secondary bg-gradient text-light py-4">
+            <div class="row">
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="py-3">
+                <div class="row">
+                    <div class="col-6 col-md-2 offset-lg-1 pb-1">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-lg-3 offset-lg-1 text-center mb-3">
+                        @if (Model.Images.Count() > 0)
+                        {
+                            <img src="@Model.Images[0].ImageUrl" width="100%" class="rounded" />
+                        }
+                        else
+                        {
+                            <img src="https://placehold.co/500x600" width="100%" class="rounded" />
+                        }
+                    </div>
+                    <div class="col-12 col-lg-6 offset-lg-1">
+                        <div class="row">
+                            <h6 class="text-dark">@Model.Name</h6>
+                        </div>
+                        @if(Model.CategoryId != null)
+                        {
+                            <div class="row">
+                                <h6 class="text-dark text-opacity-75 ">Category: @Model.Category.Name</h6>
+                            </div>
+                        }
+                        @if (Model.Description != null)
+                        {
+                            <div class="row pl-2 my-3">
+                                <p class="text-secondary lh-sm">@Html.Raw(Model.Description)</p>
+
+                            </div>
+                        }
+                        <div class="row">
+                                <span class="class=" p-1 col-3 col-lg-2 bg-white fw-bold"">Price <b>@Model.Price.ToString("c")</b></span>
+                        </div>
+                        
+                       <br/>
+                        <div class="row pl-2 mb-3">
+                            <div class="col-md-4">
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text bg-primary text-white border-0 fw-semibold"
+                                          id="inputGroup-sizing-default">
+                                        Count
+                                    </span>
+                                    <input type="number" name="quantity" value="1" class="form-control text-end"
+                                           aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" />
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 col-md-6 pb-1">
+                                <button type="submit" class="btn btn-success bg-gradient  w-100 py-2 text-uppercase fw-semibold">
+                                    <i class="bi bi-cart-plus"></i> Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="mb-3">
+                <h5 class="fw-semibold"><u>Specification</u></h5>
+            @if (Model.Specification != null)
+            {
+                <div>
+                    <p class="text-secondary lh-sm">@Html.Raw(Model.Specification)</p>
+                </div>
+            }
+            </div>
+        </div>
+    </div>
+</form>
+
+

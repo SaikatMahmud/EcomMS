@@ -21,18 +21,19 @@ namespace EcomMS.BLL.Services
         {
             DataAccess = _dataAccess;
         }
-        public List<ProductDTO> Get(string? properties = null)
+        public List<ProductImageMapDTO> Get(string? properties = null)
         {
             var data = DataAccess.Product.Get(properties);
             if (data != null)
             {
                 var cfg = new MapperConfiguration(c =>
                 {
-                    c.CreateMap<Product, ProductDTO>();
+                    c.CreateMap<Product, ProductImageMapDTO>();
+                    c.CreateMap<ProductImage, ProductImageDTO>();
+                    //c.CreateMap<Category, CategoryDTO>();
                 });
                 var mapper = new Mapper(cfg);
-                return mapper.Map<List<ProductDTO>>(data);
-
+                return mapper.Map<List<ProductImageMapDTO>>(data);
             }
             return null;
         }
@@ -87,6 +88,7 @@ namespace EcomMS.BLL.Services
                 c.CreateMap<Product, ProductDTO>();
                 c.CreateMap<Product, ProductImageMapDTO>();
                 c.CreateMap<ProductImage, ProductImageDTO>();
+                c.CreateMap<Category, CategoryDTO>();
             });
 
             var mapper = new Mapper(cfg);

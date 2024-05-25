@@ -16,6 +16,6 @@ namespace EcomMS.BLL.DTOs
         public int ProductId { get; set; }
         [Required]
         public string ImageUrl { get; set; }
-        public ProductDTO Product { get; set; }
+        //public ProductDTO Product { get; set; }
     }
 }
