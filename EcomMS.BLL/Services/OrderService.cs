@@ -61,11 +61,13 @@ namespace EcomMS.BLL.Services
             return null;
         }
 
-        public List<OrderDTO> GetCustomized(Expression<Func<OrderDTO, bool>> filter, int skip, int take, out int totalCount, out int filteredCount, string? properties = null)
+        public List<OrderWithStatusHistoriesDTO> GetCustomized(Expression<Func<OrderDTO, bool>> filter, int skip, int take, out int totalCount, out int filteredCount, string? properties = null)
         {
             var cfg = new MapperConfiguration(c =>
             {
                 c.CreateMap<Order, OrderDTO>();
+                c.CreateMap<Order, OrderWithStatusHistoriesDTO>();
+                c.CreateMap<OrderStatusHistory, OrderStatusHistoryDTO>();
             });
             var mapper = new Mapper(cfg);
             var orderFilter = mapper.MapExpression<Expression<Func<Order, bool>>>(filter);
@@ -76,8 +78,9 @@ namespace EcomMS.BLL.Services
             {
                 totalCount = data.Item2;
                 filteredCount = data.Item3;
-                return mapper.Map<List<OrderDTO>>(data.Item1);
-
+                var result = mapper.Map<List<OrderWithStatusHistoriesDTO>>(data.Item1);
+                result.ForEach(o => o.OrderStatusHistories = o.OrderStatusHistories.OrderByDescending(h => h.CreatedAt).ToList());
+                return result;
             }
             return null;
         }

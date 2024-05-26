@@ -9,9 +9,11 @@ namespace EcomMS.Web.Controllers
     public class OrderController : Controller
     {
         private OrderService orderService;
+        private OrderStatusHistoryService orderStatusHistory;
         public OrderController(IBusinessService serviceAccess)
         {
             orderService = serviceAccess.OrderService;
+            orderStatusHistory = serviceAccess.OrderStatusHistoryService;
         }
         public IActionResult Index()
         {
@@ -39,12 +41,13 @@ namespace EcomMS.Web.Controllers
         }
         public IActionResult GetOrderHistoryCustomized(int draw, int start, int length, string search, int orderColumn, string orderDirection)
         {
+            int cusId = 2;
             int totalCount = 0;
             int filteredCount = 0;
             List<OrderWithStatusHistoriesDTO> result;
             //if (string.IsNullOrEmpty(search))
             //{
-                result = orderService.GetCustomized(start, length, out totalCount, out filteredCount, "OrderStatusHistories");
+                result = orderService.GetCustomized(o => o.CustomerId == cusId, start, length, out totalCount, out filteredCount, "OrderStatusHistories");
             //}
             //else
             //{
@@ -58,6 +61,53 @@ namespace EcomMS.Web.Controllers
                 data = result
             };
             return Json(response);
+        }
+        public IActionResult AllOrder()
+        {
+            return View();
+        }
+
+        public IActionResult GetAllOrderCustomized(int draw, int start, int length, string search, int orderColumn, string orderDirection)
+        {
+            int totalCount = 0;
+            int filteredCount = 0;
+            var result = orderService.GetCustomized(start, length, out totalCount, out filteredCount, "OrderStatusHistories");
+            var response = new
+            {
+                draw = draw,
+                recordsTotal = totalCount,
+                recordsFiltered = filteredCount,
+                data = result
+            };
+            return Json(response);
+        }
+
+        [HttpPut]
+        [Route("Order/ProcessOrderAdmin/{orderId}")]
+        public IActionResult ProcessOrderAdmin(int orderId)
+        {
+            var empId = 3;
+            var result = orderStatusHistory.ProcessOrder(orderId, empId);
+            if (result) return Json(new { success = true, msg = "Order status changed" });
+            return Json(new { success = false, msg = "Internal server error" });
+        }
+        [HttpPut]
+        [Route("Order/ShipOrderAdmin/{orderId}")]
+        public IActionResult ShipOrderAdmin(int orderId)
+        {
+            var empId = 3;
+            var result = orderStatusHistory.ShipOrder(orderId, empId);
+            if (result) return Json(new { success = true, msg = "Order status changed" });
+            return Json(new { success = false, msg = "Internal server error" });
+        }
+        [HttpPut]
+        [Route("Order/CancelOrderAdmin/{orderId}")]
+        public IActionResult CancelOrderAdmin(int orderId)
+        {
+            var empId = 3;
+            var result = orderStatusHistory.CancelOrderByAdmin(orderId, empId);
+            if (result) return Json(new { success = true, msg = "Order cancelled!" });
+            return Json(new { success = false, msg = "Internal server error" });
         }
     }
 }

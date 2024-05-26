@@ -26,7 +26,7 @@
             { data: 'paymentMethod', width: '5%' },
             {
                 data: 'createdAt',
-                render: function (data, type, row) {
+                render: function (data) {
                     if (data) {
                         return moment(data).format('YYYY-MM-DD');
                     } else {
@@ -35,7 +35,6 @@
                 },
                 width: '10%'
             },
-
             {
                 data: 'id',
                 render: function (data) {
@@ -46,6 +45,7 @@
                 },
                 width: '2%'
             }
+            
         ],
     });
 

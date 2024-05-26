@@ -112,10 +112,60 @@ namespace EcomMS.BLL.Services
         //    }
         //    return DataAccess.OrderStatusHistory.Update(existingData);
         //}
-        public bool Delete(int Id)
+        //public bool Delete(int Id)
+        //{
+        //    var data = DataAccess.OrderStatusHistory.Get(c => c.Id == Id);
+        //    return DataAccess.OrderStatusHistory.Delete(data);
+        //}
+        public bool ProcessOrder(int orderId, int empId)
         {
-            var data = DataAccess.OrderStatusHistory.Get(c => c.Id == Id);
-            return DataAccess.OrderStatusHistory.Delete(data);
+            var orderStatus = new OrderStatusHistory()
+            {
+                OrderId = orderId,
+                Status = "Processing",
+                CreatedBy = empId,
+                CreatedAt = DateTime.Now,
+            };
+            return DataAccess.OrderStatusHistory.Create(orderStatus);
+        }
+        public bool ShipOrder(int orderId, int empId)
+        {
+            var orderStatus = new OrderStatusHistory()
+            {
+                OrderId = orderId,
+                Status = "Shipped",
+                CreatedBy = empId,
+                CreatedAt = DateTime.Now,
+            };
+            return DataAccess.OrderStatusHistory.Create(orderStatus);
+        }
+        public bool CancelOrderByAdmin(int orderId, int empId)
+        {
+            var orderStatus = new OrderStatusHistory()
+            {
+                OrderId = orderId,
+                Status = "Cancelled by Admin",
+                CreatedBy = empId,
+                CreatedAt = DateTime.Now,
+            };
+            return DataAccess.OrderStatusHistory.Create(orderStatus);
+        }
+        public bool DeliverOrder(int orderId, int empId)
+        {
+            var existingOrder = DataAccess.Order.Get(o => o.Id == orderId);
+            if (existingOrder != null)
+            {
+                existingOrder.IsDelivered = true;
+                DataAccess.Order.Update(existingOrder);
+            }
+            var orderStatus = new OrderStatusHistory()
+            {
+                OrderId = orderId,
+                Status = "Delivered",
+                CreatedBy = empId,
+                CreatedAt = DateTime.Now,
+            };
+            return DataAccess.OrderStatusHistory.Create(orderStatus);
         }
     }
 }
