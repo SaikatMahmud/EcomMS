@@ -9,10 +9,12 @@ namespace EcomMS.Web.Controllers
     public class OrderController : Controller
     {
         private OrderService orderService;
+        private OrderProductService orderProductService;
         private OrderStatusHistoryService orderStatusHistory;
         public OrderController(IBusinessService serviceAccess)
         {
             orderService = serviceAccess.OrderService;
+            orderProductService = serviceAccess.OrderProductService;
             orderStatusHistory = serviceAccess.OrderStatusHistoryService;
         }
         public IActionResult Index()
@@ -108,6 +110,15 @@ namespace EcomMS.Web.Controllers
             var result = orderStatusHistory.CancelOrderByAdmin(orderId, empId);
             if (result) return Json(new { success = true, msg = "Order cancelled!" });
             return Json(new { success = false, msg = "Internal server error" });
+        }
+        [HttpGet]
+        [Route("Order/OrderDetails/{orderId}")]
+        public IActionResult OrderDetails(int orderId)
+        {
+            var data = orderProductService.GetAll(op => op.OrderId == orderId, "Product");
+            var statusHistory = orderStatusHistory.Get(sh => sh.OrderId == orderId);
+            ViewBag.StatusHistory = statusHistory;
+            return View(data);
         }
     }
 }

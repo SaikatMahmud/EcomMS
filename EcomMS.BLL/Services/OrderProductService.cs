@@ -93,6 +93,24 @@ namespace EcomMS.BLL.Services
             }
             return null;
         }
+        public List<OrderProductDTO> GetAll(Expression<Func<OrderProductDTO, bool>> filter, string? properties = null)
+        {
+            var cfg = new MapperConfiguration(c =>
+            {
+                c.CreateMap<OrderProduct, OrderProductDTO>();
+                c.CreateMap<Product, ProductDTO>();
+            });
+
+            var mapper = new Mapper(cfg);
+            var orderProductFilter = mapper.MapExpression<Expression<Func<OrderProduct, bool>>>(filter);
+
+            var data = DataAccess.OrderProduct.GetAll(orderProductFilter, properties);
+            if (data != null)
+            {
+                return mapper.Map<List<OrderProductDTO>>(data);
+            }
+            return null;
+        }
         public bool Create(OrderProductDTO obj)
         {
             var cfg = new MapperConfiguration(c =>

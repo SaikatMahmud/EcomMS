@@ -1,0 +1,83 @@
+﻿@model IEnumerable<OrderProductDTO>
+@{
+    var totalAmount = 0;
+}
+<div class="container">
+    <div class="card">
+        <div class="card-header text-light ml-0">
+            <div class="container row">
+                <div class="col-12 d-none d-md-block col-md-6 pb-1">
+                    @* <i class="fas fa-shopping-cart"></i> &nbsp; Order Summary *@
+                </div>
+                @* <div class="col-12 col-md-4 offset-md-2 text-right">
+                    <a href="/Order/AllOrder" class="btn btn-outline-info form-control btn-sm">Back to order list</a>
+                </div> *@
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="container rounded p-2">
+                <div class="row">
+                    <div class="col-12 col-lg-5 offset-lg-1">
+                        <h4 class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="text-primary">Order #@Model.FirstOrDefault().OrderId</span>
+                        </h4>
+                        @* <label class="form-control my-2">Order Status - @ViewBag.StatusHistory[0].Status</label> *@
+
+                        <ul class="list-group mb-3">
+                            @foreach (var o in Model)
+                            {
+                                totalAmount += o.Price * o.Quantity;
+                                <li class="list-group-item d-flex justify-content-between p-2">
+                                    <div class="row container">
+                                        <div class="col-8">
+
+                                            <h6 class="my-0 text-primary">@o.Product.Name</h6>
+                                        </div>
+                                        <div class="col-4 text-end">
+                                            <p class="text-success">@o.Price &nbsp;x @o.Quantity</p>
+                                        </div>
+                                    </div>
+                                </li>
+
+                            }
+                            <li class="list-group-item bg-primary">
+                                <div class="row container">
+                                    <div class="col-6">
+                                        <h5 class="text-white">TOTAL </h5>
+                                    </div>
+                                    <div class="col-6 text-end">
+                                        <h5 class="text-white">@totalAmount</h5>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+
+                    </div>
+
+                    <div class="col-12 col-lg-5 offset-lg-1">
+                        <div class="row">
+                            <h4 class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="text-primary">Order Statuses</span>
+                            </h4>
+                            <ul class="list-group mb-3">
+                                @foreach (var s in ViewBag.StatusHistory)
+                                {
+                                    <li class="list-group-item d-flex justify-content-between p-2">
+                                        <div class="row container">
+                                            <div class="col-8">
+                                                @s.Status
+                                            </div>
+                                            <div class="col-4 text-end">
+                                               @s.CreatedAt
+                                            </div>
+                                        </div>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

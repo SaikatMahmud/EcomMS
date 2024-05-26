@@ -76,7 +76,24 @@ namespace EcomMS.BLL.Services
             return null;
         }
 
-        public OrderStatusHistoryDTO Get(Expression<Func<OrderStatusHistoryDTO, bool>> filter, string? properties = null)
+        //public OrderStatusHistoryDTO Get(Expression<Func<OrderStatusHistoryDTO, bool>> filter, string? properties = null)
+        //{
+        //    var cfg = new MapperConfiguration(c =>
+        //    {
+        //        c.CreateMap<OrderStatusHistory, OrderStatusHistoryDTO>();
+        //    });
+
+        //    var mapper = new Mapper(cfg);
+        //    var orderStatusHistoryFilter = mapper.MapExpression<Expression<Func<OrderStatusHistory, bool>>>(filter);
+
+        //    var data = DataAccess.OrderStatusHistory.Get(orderStatusHistoryFilter, properties);
+        //    if (data != null)
+        //    {
+        //        return mapper.Map<OrderStatusHistoryDTO>(data);
+        //    }
+        //    return null;
+        //}
+        public List<OrderStatusHistoryDTO> Get(Expression<Func<OrderStatusHistoryDTO, bool>> filter, string? properties = null)
         {
             var cfg = new MapperConfiguration(c =>
             {
@@ -86,10 +103,12 @@ namespace EcomMS.BLL.Services
             var mapper = new Mapper(cfg);
             var orderStatusHistoryFilter = mapper.MapExpression<Expression<Func<OrderStatusHistory, bool>>>(filter);
 
-            var data = DataAccess.OrderStatusHistory.Get(orderStatusHistoryFilter, properties);
+            var data = DataAccess.OrderStatusHistory.GetAll(orderStatusHistoryFilter, properties);
             if (data != null)
             {
-                return mapper.Map<OrderStatusHistoryDTO>(data);
+                var result = mapper.Map<List<OrderStatusHistoryDTO>>(data);
+                result = result.OrderByDescending(h => h.CreatedAt).ToList();
+                return result;
             }
             return null;
         }

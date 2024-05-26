@@ -41,7 +41,7 @@ function LoadAllOrder() {
                 render: function (data, type, row) {
                     var status = getFirstStatus(row);
                     var buttons = `<div class="w-75 btn-group" role="group">
-                    <button type="button" onclick="" class="btn btn-warning mx-1"><i class="bi bi-three-dots-vertical"></i></button>`;
+                    <button type="button" onclick="viewOrderDeatils(${data})" class="btn btn-warning mx-1"><i class="bi bi-three-dots-vertical"></i></button>`;
                     if (status == "Placed") {
                         buttons += `<button type="button" onclick="processOrder(${data})" class="btn btn-success mx-1">Process</button>`;
                         buttons += `<button type="button" onclick="cancelOrderAdmin(${data})" class="btn btn-danger mx-1">Cancel</button>`;
@@ -110,24 +110,7 @@ function shipOrder(orderId) {
 }
 function viewOrderDeatils(orderId) {
     console.log('Shipping order: ' + orderId);
-    $.ajax({
-        url: '' + orderId,
-        type: 'GET',
-        success: function (response) {
-            debugger;
-            if (response.success) {
-                datatable.ajax.reload();
-                toastr.success(response.msg);
-            }
-            else {
-                toastr.error(response.msg);
-            }
-        },
-        error: function (error) {
-            debugger;
-            alert("Internal server error!");
-        }
-    });
+    window.location.href = '/Order/OrderDetails/' + orderId;
 }
 function cancelOrderAdmin(orderId) {
     console.log('Shipping order: ' + orderId);
