@@ -1,6 +1,7 @@
 ﻿using EcomMS.BLL.DTOs;
 using EcomMS.BLL.ServiceAccess;
 using EcomMS.BLL.Services;
+using EcomMS.BLL.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EcomMS.Web.Controllers
@@ -61,9 +62,11 @@ namespace EcomMS.Web.Controllers
         {
             var cusId = 2;
             var cartData = cartService.GetAll(ct => ct.CustomerId == cusId, "Product");
+            var cartSummary = new CartSummary();
+            cartSummary.Carts = cartData;
             var customerData = customerService.Get(c => c.Id == cusId);
             ViewBag.Customer = customerData;
-            return View(cartData);
+            return View(cartSummary);
         }
        
     }

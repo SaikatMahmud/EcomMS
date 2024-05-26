@@ -1,8 +1,8 @@
-﻿@model IEnumerable<CartDTO>
+﻿@model CartSummary
 @{
     var totalAmount = 0;
 }
-<form method="post">
+<form method="post" action="/Order/Checkout">
     <br />
     <div class="container">
         <div class="card shadow border-0">
@@ -27,24 +27,30 @@
                                     <label>Name</label>
                                 </div>
                                 <div class="col-9">
-                                    <input name="Name" value="@ViewBag.Customer.Name" class="form-control" />
+                                    <input name="Name" value="@ViewBag.Customer.Name" class="form-control" required/>
                                 </div>
+                                @* <span asp-validation-for="Name" class="text-danger"></span> *@
                             </div>
                             <div class="row my-1">
                                 <div class="col-3">
                                     <label>Mobile</label>
                                 </div>
                                 <div class="col-9">
-                                    <input name="Mobile" value="@ViewBag.Customer.Mobile" class="form-control" />
+                                    <input name="Mobile" value="@ViewBag.Customer.Mobile" class="form-control" required/>
                                 </div>
+                                @* <span asp-validation-for="Mobile" class="text-danger"></span> *@
+
+
                             </div>
                             <div class="row my-1">
                                 <div class="col-3">
                                     <label>Full Address</label>
                                 </div>
                                 <div class="col-9">
-                                    <input name="Address" value="@ViewBag.Customer.Address" class="form-control" />
+                                    <input name="DeliveryAddress" value="@ViewBag.Customer.Address" class="form-control" required />
                                 </div>
+                                @* <span asp-validation-for="Address" class="text-danger"></span> *@
+
                             </div>
                         </div>
                         <div class="col-12 col-lg-5 offset-lg-1">
@@ -53,7 +59,7 @@
                             </h4>
 
                             <ul class="list-group mb-3">
-                                @foreach (var cart in Model)
+                                @foreach (var cart in Model.Carts)
                                 {
                                     totalAmount += cart.Product.Price * cart.Quantity;
                                     <li class="list-group-item d-flex justify-content-between">
@@ -64,9 +70,19 @@
                                     </li>
 
                                 }
+                                <input name="Amount" value="@totalAmount" hidden required />
                                 <li class="list-group-item d-flex justify-content-between bg-light">
                                     <small class="text-info">Total (Tk)</small>
                                     <strong class="text-info">@totalAmount</strong>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between bg-light">
+                                    <small class="text-info">Payment method</small>
+                                    <select name="PaymentMethod" required>
+                                        <option value="" disabled selected>Select One</option>
+                                        <option value="COD">Cash On Delivery</option>
+                                        <option value="MFS">MFS</option>
+                                        <option value="Card">Card</option>
+                                    </select>
                                 </li>
                             </ul>
 

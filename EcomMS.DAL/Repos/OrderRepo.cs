@@ -15,5 +15,12 @@ namespace EcomMS.DAL.Repos
         {
             _db = db;
         }
+
+        public Order Create(Order order)
+        {
+            _db.Orders.Add(order);
+            if (_db.SaveChanges() > 0) return order;
+            return null;
+        }
     }
 }

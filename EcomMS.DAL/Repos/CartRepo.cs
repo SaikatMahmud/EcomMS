@@ -15,5 +15,16 @@ namespace EcomMS.DAL.Repos
         {
             _db = db;
         }
+
+        public bool DeleleByCustomerId(int customerId)
+        {
+            var entitiesToDelete = _db.Carts.Where(c=>c.CustomerId == customerId);
+            //if (entitiesToDelete.Any())
+            //{
+                dbSet.RemoveRange(entitiesToDelete);
+                return _db.SaveChanges() > 0;
+            //}
+            //return false;
+        }
     }
 }

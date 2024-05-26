@@ -10,5 +10,6 @@ namespace EcomMS.DAL.Interfaces
     public interface ICart : IRepo<Cart>
     {
         //any extra functionality here if needed
+        bool DeleleByCustomerId(int customerId);
     }
 }

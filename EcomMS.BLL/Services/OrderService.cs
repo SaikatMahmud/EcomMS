@@ -1,8 +1,11 @@
 ﻿using AutoMapper;
 using AutoMapper.Extensions.ExpressionMapping;
 using EcomMS.BLL.DTOs;
+using EcomMS.BLL.ViewModels;
 using EcomMS.DAL.Models;
 using EcomMS.DAL.UnitOfWork;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -93,16 +96,16 @@ namespace EcomMS.BLL.Services
             }
             return null;
         }
-        public bool Create(OrderDTO obj)
-        {
-            var cfg = new MapperConfiguration(c =>
-            {
-                c.CreateMap<OrderDTO, Order>();
-            });
-            var mapper = new Mapper(cfg);
-            var Order = mapper.Map<Order>(obj);
-            return DataAccess.Order.Create(Order);
-        }
+        //public bool Create(OrderDTO obj)
+        //{
+        //    var cfg = new MapperConfiguration(c =>
+        //    {
+        //        c.CreateMap<OrderDTO, Order>();
+        //    });
+        //    var mapper = new Mapper(cfg);
+        //    var order = mapper.Map<Order>(obj);
+        //    return DataAccess.Order.Create(order);
+        //}
         //public bool Update(OrderDTO obj)
         //{
         //    var existingData = DataAccess.Order.Get(c => c.Id == obj.Id);
@@ -116,6 +119,63 @@ namespace EcomMS.BLL.Services
         {
             var data = DataAccess.Order.Get(c => c.Id == Id);
             return DataAccess.Order.Delete(data);
+        }
+
+        public bool PlaceOrder(CartSummary obj, out string msg)
+        {
+            msg = string.Empty;
+            //first checking if any product has lower inventory than the cart quantity
+            var cartItems = DataAccess.Cart.GetAll(c => c.CustomerId == obj.CustomerId, "Product");
+            List<Product> productsToBeOrdered = new List<Product>();
+            foreach(var cart in cartItems)
+            {
+               var product = DataAccess.Product.Get(p => p.Id == cart.ProductId);
+                if(product.Quantity < cart.Quantity)
+                {
+                    msg = product.Name + " has lower inventory than the cart quantity";
+                    return false;
+                }
+                productsToBeOrdered.Add(product);
+            }
+            var cfg = new MapperConfiguration(c =>
+            {
+                c.CreateMap<CartSummary, Order>();
+            });
+            var mapper = new Mapper(cfg);
+            var order = mapper.Map<Order>(obj);
+            order.IsDelivered = false;
+            order.Status = 1;
+            order.IsReviewed = false;
+            order.CreatedAt = DateTime.Now;
+            order.UpdatedAt = DateTime.Now;
+            var createdOrder = DataAccess.Order.Create(order);
+            if(createdOrder != null)
+            {
+                foreach(var cart in cartItems)
+                {
+                    var product = (from pToOrder in productsToBeOrdered
+                               where pToOrder.Id == cart.ProductId
+                               select pToOrder).FirstOrDefault();
+                    var op = new OrderProduct()
+                    {
+                        OrderId = createdOrder.Id,
+                        ProductId = cart.ProductId,
+                        Price = product.Price,
+                        Quantity = cart.Quantity
+                    };
+                    DataAccess.OrderProduct.Create(op);
+                    product.Quantity -= cart.Quantity;
+                    DataAccess.Product.Update(product);
+                }
+                var cartRemoved = DataAccess.Cart.DeleleByCustomerId(obj.CustomerId);
+                if (cartRemoved)
+                {
+                    msg = "Order placed successfully!";
+                    return true;
+                }
+            }
+            msg = "Internal server error";
+            return true;
         }
     }
 }

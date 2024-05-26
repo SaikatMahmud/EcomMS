@@ -10,5 +10,6 @@ namespace EcomMS.DAL.Interfaces
     public interface IOrder : IRepo<Order>
     {
         //any extra functionality here if needed
+        Order Create(Order order);
     }
 }
