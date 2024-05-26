@@ -1,11 +1,36 @@
 ﻿var datatable;
-function LoadProductList() {
+$(document).ready(function () {
+    $('#categoryId').change(function () {
+        var selectedValue = $('#categoryId').val();
+        datatable.destroy();
+        LoadProductList(selectedValue);
+    });
+    $('#customFilter').change(function () {
+        var selectedValue = $('#customFilter').val();
+        datatable.destroy();
+        var url = "";
+        if (selectedValue == "all") {
+            LoadProductList(0);
+        }
+        else if (selectedValue == "lowStock") {
+            url = "/Product/GetAllLowStockCustomized";
+            LoadByCustomFilter(url);
+        }
+        else if (selectedValue == "offline") {
+            url = "/Product/GetAllOfflineCustomized";
+            LoadByCustomFilter(url);
+        }
+    });
+});
+
+
+function LoadByCustomFilter(url) {
     datatable = $('#tblData').DataTable({
         "processing": true,
         "serverSide": true,
         "cache": false,
         "ajax": {
-            "url": "/Product/GetAllCustomized",
+            "url": url,
             "type": "GET",
             "data": function (d) {
                 d.search = d.search.value;
@@ -24,7 +49,53 @@ function LoadProductList() {
             { data: 'name', width: '15%' },
             { data: 'price', width: '8%' },
             { data: 'quantity', width: '5%' },
+            { data: 'reorderQuantity', width: '5%' },
             { data: 'category.name', width: '10%' },
+            { data: 'isLive', width: '10%' },
+            {
+                data: 'id',
+                render: function (data) {
+                    return `<div class="w-75 btn-group" role="group">
+                    <button type="button" onclick="EditProduct(${data})" class="btn btn-warning mx-1"><i class="bi bi-pencil-square"></i></button>
+                    <button type="button" onclick="DeleteProduct(${data})" class="btn btn-danger mx-1"><i class="bi bi-trash"></i></button>
+                    </div>`
+                },
+                width: '2%'
+            }
+        ],
+    });
+
+}
+
+function LoadProductList(catId) {
+    datatable = $('#tblData').DataTable({
+        "processing": true,
+        "serverSide": true,
+        "cache": false,
+        "ajax": {
+            "url": `/Product/GetAllCustomized?filterbycat=${catId}`,
+            "type": "GET",
+            "data": function (d) {
+                d.search = d.search.value;
+                d.orderColumn = d.order[0].column;
+                d.orderDirection = d.order[0].dir;
+            }
+        },
+        "columnDefs": [
+            { "className": "dt-center", "targets": "_all" }
+        ],
+        "language": {
+            "searchPlaceholder": "search for product"
+        },
+        "columns": [
+            { data: 'id', width: '3%', "className": "dt-right" },
+            { data: 'name', width: '15%' },
+            { data: 'price', width: '8%' },
+            { data: 'quantity', width: '5%' },
+            { data: 'reorderQuantity', width: '5%' },
+            { data: 'category.name', width: '10%' },
+            { data: 'isLive', width: '10%' },
+
             {
                 data: 'id',
                 render: function (data) {
@@ -76,3 +147,7 @@ function DeleteProduct(id) {
         }
     });
 }
+
+//$('#categoryId').on('change', function () {
+//    alert(this.value);
+//});

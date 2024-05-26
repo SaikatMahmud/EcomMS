@@ -21,7 +21,7 @@ namespace EcomMS.BLL.Services
         {
             DataAccess = _dataAccess;
         }
-        public List<ProductImageMapDTO> Get(string? properties = null)
+        public List<ProductImageMapDTO> GetAll(string? properties = null)
         {
             var data = DataAccess.Product.GetAll(properties);
             if (data != null)
@@ -33,6 +33,24 @@ namespace EcomMS.BLL.Services
                     //c.CreateMap<Category, CategoryDTO>();
                 });
                 var mapper = new Mapper(cfg);
+                return mapper.Map<List<ProductImageMapDTO>>(data);
+            }
+            return null;
+        } 
+        public List<ProductImageMapDTO> GetAll(Expression<Func<ProductDTO, bool>> filter, string? properties = null)
+        {
+            var cfg = new MapperConfiguration(c =>
+            {
+                c.CreateMap<Product, ProductDTO>();
+                c.CreateMap<Product, ProductImageMapDTO>();
+                c.CreateMap<ProductImage, ProductImageDTO>();
+                //c.CreateMap<Category, CategoryDTO>();
+            });
+            var mapper = new Mapper(cfg);
+            var productFilter = mapper.MapExpression<Expression<Func<Product, bool>>>(filter);
+            var data = DataAccess.Product.GetAll(productFilter, properties);
+            if (data != null)
+            {
                 return mapper.Map<List<ProductImageMapDTO>>(data);
             }
             return null;
@@ -119,9 +137,11 @@ namespace EcomMS.BLL.Services
                 existingData.Name = obj.Name;
                 existingData.Price = obj.Price;
                 existingData.Quantity = obj.Quantity;
+                existingData.ReorderQuantity = obj.ReorderQuantity;
                 existingData.Description = obj.Description;
                 existingData.Specification = obj.Specification;
                 existingData.CategoryId = obj.CategoryId;
+                existingData.IsLive = obj.IsLive;
             }
             return DataAccess.Product.Update(existingData);
         }

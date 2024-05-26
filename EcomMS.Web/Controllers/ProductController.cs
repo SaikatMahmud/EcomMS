@@ -19,22 +19,43 @@ namespace EcomMS.Web.Controllers
         }
         public IActionResult Index()
         {
+            IEnumerable<SelectListItem> catList = categoryService.Get().Select(c => new SelectListItem
+            {
+                Text = c.Name,
+                Value = c.Id.ToString(),
+            });
+            ViewBag.catList = catList;
             return View();
         }
         [HttpGet]
-        public IActionResult GetAllCustomized(int draw, int start, int length, string search, int orderColumn, string orderDirection)
+        public IActionResult GetAllCustomized([FromQuery] int filterbycat, int draw, int start, int length, string search, int orderColumn, string orderDirection)
         {
             int totalCount = 0;
             int filteredCount = 0;
             List<ProductDTO> result;
-            if (string.IsNullOrEmpty(search))
+            if(filterbycat == 0)
             {
-                result = productService.GetCustomized(start, length, out totalCount, out filteredCount, "Category");
+                if (string.IsNullOrEmpty(search))
+                {
+                    result = productService.GetCustomized(start, length, out totalCount, out filteredCount, "Category");
+                }
+                else
+                {
+                    result = productService.GetCustomized(p => p.Name.Contains(search) || p.Category.Name.Contains(search), start, length, out totalCount, out filteredCount, "Category");
+                }
             }
             else
             {
-                result = productService.GetCustomized(c => c.Name.Contains(search) || c.Category.Name.Contains(search), start, length, out totalCount, out filteredCount, "Category");
+                if (string.IsNullOrEmpty(search))
+                {
+                    result = productService.GetCustomized(p => p.CategoryId == filterbycat, start, length, out totalCount, out filteredCount, "Category");
+                }
+                else
+                {
+                    result = productService.GetCustomized(p => p.CategoryId == filterbycat && (p.Name.Contains(search) || p.Category.Name.Contains(search)), start, length, out totalCount, out filteredCount, "Category");
+                }
             }
+           
             var response = new
             {
                 draw = draw,
@@ -44,6 +65,89 @@ namespace EcomMS.Web.Controllers
             };
             return Json(response);
         }
+
+
+
+        [HttpGet]
+        public IActionResult GetAllOfflineCustomized([FromQuery] int filterbycat, int draw, int start, int length, string search, int orderColumn, string orderDirection)
+        {
+            int totalCount = 0;
+            int filteredCount = 0;
+            List<ProductDTO> result;
+            if (filterbycat == 0)
+            {
+                if (string.IsNullOrEmpty(search))
+                {
+                    result = productService.GetCustomized(p => p.IsLive == false, start, length, out totalCount, out filteredCount, "Category");
+                }
+                else
+                {
+                    result = productService.GetCustomized(p => p.IsLive == false && (p.Name.Contains(search) || p.Category.Name.Contains(search)), start, length, out totalCount, out filteredCount, "Category");
+                }
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(search))
+                {
+                    result = productService.GetCustomized(p => p.IsLive == false && p.CategoryId == filterbycat, start, length, out totalCount, out filteredCount, "Category");
+                }
+                else
+                {
+                    result = productService.GetCustomized(p => p.IsLive == false && p.CategoryId == filterbycat && (p.Name.Contains(search) || p.Category.Name.Contains(search)), start, length, out totalCount, out filteredCount, "Category");
+                }
+            }
+
+            var response = new
+            {
+                draw = draw,
+                recordsTotal = totalCount,
+                recordsFiltered = filteredCount,
+                data = result
+            };
+            return Json(response);
+        }
+
+
+
+        [HttpGet]
+        public IActionResult GetAllLowStockCustomized([FromQuery] int filterbycat, int draw, int start, int length, string search, int orderColumn, string orderDirection)
+        {
+            int totalCount = 0;
+            int filteredCount = 0;
+            List<ProductDTO> result;
+            if (filterbycat == 0)
+            {
+                if (string.IsNullOrEmpty(search))
+                {
+                    result = productService.GetCustomized(p => p.Quantity < p.ReorderQuantity, start, length, out totalCount, out filteredCount, "Category");
+                }
+                else
+                {
+                    result = productService.GetCustomized(p => p.Quantity < p.ReorderQuantity && (p.Name.Contains(search) || p.Category.Name.Contains(search)), start, length, out totalCount, out filteredCount, "Category");
+                }
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(search))
+                {
+                    result = productService.GetCustomized(p => p.Quantity < p.ReorderQuantity && p.CategoryId == filterbycat, start, length, out totalCount, out filteredCount, "Category");
+                }
+                else
+                {
+                    result = productService.GetCustomized(p => p.Quantity < p.ReorderQuantity && p.CategoryId == filterbycat && (p.Name.Contains(search) || p.Category.Name.Contains(search)), start, length, out totalCount, out filteredCount, "Category");
+                }
+            }
+
+            var response = new
+            {
+                draw = draw,
+                recordsTotal = totalCount,
+                recordsFiltered = filteredCount,
+                data = result
+            };
+            return Json(response);
+        }
+
         [HttpGet]
         public IActionResult Edit(int id)
         {

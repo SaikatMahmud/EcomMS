@@ -1,7 +1,9 @@
+using EcomMS.BLL.DTOs;
 using EcomMS.BLL.ServiceAccess;
 using EcomMS.BLL.Services;
 using EcomMS.Web.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Diagnostics;
 
 namespace EcomMS.Web.Controllers
@@ -9,18 +11,34 @@ namespace EcomMS.Web.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private CategoryService categoryService;
         private ProductService productService;
 
-        public HomeController(IBusinessService businessService/*ILogger<HomeController> logger*/)
+        public HomeController(IBusinessService serviceAccess/*ILogger<HomeController> logger*/)
         {
-            productService = businessService.ProductService;
+            productService = serviceAccess.ProductService;
+            categoryService = serviceAccess.CategoryService;
             //_logger = logger;
         }
 
-        public IActionResult Index()
+        public IActionResult Index([FromQuery] int filterbycat)
         {
-            var data = productService.Get("Images");
-            return View(data);
+            List<ProductImageMapDTO> result;
+            if(filterbycat == 0)
+            {
+            result = productService.GetAll(p => p.IsLive == true, "Images");
+            }
+            else
+            {
+                result = productService.GetAll(p => p.IsLive == true && p.CategoryId == filterbycat, "Images");
+            }
+            IEnumerable<SelectListItem> catList = categoryService.Get().Select(c => new SelectListItem
+            {
+                Text = c.Name,
+                Value = c.Id.ToString(),
+            });
+            ViewBag.catList = catList;
+            return View(result);
         }
         [Route("Product/Details/{id}")]
         public IActionResult ProductDetails(int id)

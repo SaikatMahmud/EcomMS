@@ -26,9 +26,10 @@ namespace EcomMS.BLL.Services
                             Name = row.Cell(1).GetValue<string>(),
                             Price = row.Cell(2).GetValue<int>(),
                             Quantity = row.Cell(3).GetValue<int>(),
-                            Description = row.Cell(4).GetValue<string>(),
-                            Specification = row.Cell(5).GetValue<string>(),
-                            CategoryId = row.Cell(6).GetValue<int?>(),
+                            ReorderQuantity = row.Cell(4).GetValue<int>(),
+                            Description = row.Cell(5).GetValue<string>(),
+                            Specification = row.Cell(6).GetValue<string>(),
+                            CategoryId = row.Cell(7).GetValue<int?>(),
                         };
                         products.Add(product);
                     }

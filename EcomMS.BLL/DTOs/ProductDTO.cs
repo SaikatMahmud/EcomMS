@@ -19,6 +19,8 @@ namespace EcomMS.BLL.DTOs
         public int Price { get; set; }
         [Required]
         public int Quantity { get; set; }
+        public int ReorderQuantity { get; set; }
+        public bool IsLive { get; set; }
         public string? Description { get; set; }
         public string? Specification { get; set; }
         public int? CategoryId { get; set; }
