@@ -94,9 +94,12 @@
                 <div class="row">
                     <div class="col-12 col-md-8 pt-2">
                     </div>
+                    @if(Model.Carts.Count() > 0)
+                    {   
                     <div class="col-12 col-md-4">
                         <button type="submit" value="Place Order" class="btn btn-primary form-control">Place Order</button>
                     </div>
+                    }
                 </div>
             </div>
         </div>

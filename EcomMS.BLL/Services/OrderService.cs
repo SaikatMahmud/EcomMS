@@ -22,23 +22,24 @@ namespace EcomMS.BLL.Services
         {
             DataAccess = _dataAccess;
         }
-        public List<OrderDTO> Get(string? properties = null)
+        public List<OrderWithStatusHistoriesDTO> Get(string? properties = null)
         {
             var data = DataAccess.Order.GetAll(properties);
             if (data != null)
             {
                 var cfg = new MapperConfiguration(c =>
                 {
-                    c.CreateMap<Order, OrderDTO>();
+                    c.CreateMap<Order, OrderWithStatusHistoriesDTO>();
+                    c.CreateMap<OrderStatusHistory, OrderStatusHistoryDTO>();
                 });
                 var mapper = new Mapper(cfg);
-                return mapper.Map<List<OrderDTO>>(data);
+                return mapper.Map<List<OrderWithStatusHistoriesDTO>>(data);
 
             }
             return null;
         }
 
-        public List<OrderDTO> GetCustomized(int skip, int take, out int totalCount, out int filteredCount, string? properties = null)
+        public List<OrderWithStatusHistoriesDTO> GetCustomized(int skip, int take, out int totalCount, out int filteredCount, string? properties = null)
         {
             totalCount = 0;
             filteredCount = 0;
@@ -47,13 +48,15 @@ namespace EcomMS.BLL.Services
             {
                 var cfg = new MapperConfiguration(c =>
                 {
-                    c.CreateMap<Order, OrderDTO>();
+                    c.CreateMap<Order, OrderWithStatusHistoriesDTO>();
+                    c.CreateMap<OrderStatusHistory, OrderStatusHistoryDTO>();
                 });
                 var mapper = new Mapper(cfg);
                 totalCount = data.Item2;
                 filteredCount = data.Item3;
-                return mapper.Map<List<OrderDTO>>(data.Item1);
-
+                var result = mapper.Map<List<OrderWithStatusHistoriesDTO>>(data.Item1);
+                result.ForEach(o => o.OrderStatusHistories = o.OrderStatusHistories.OrderByDescending(h => h.CreatedAt).ToList());
+                return result;
             }
             return null;
         }
@@ -132,11 +135,12 @@ namespace EcomMS.BLL.Services
                var product = DataAccess.Product.Get(p => p.Id == cart.ProductId);
                 if(product.Quantity < cart.Quantity)
                 {
-                    msg = product.Name + " has lower inventory than the cart quantity";
+                    msg = product.Name + " has lower inventory than cart quantity";
                     return false;
                 }
                 productsToBeOrdered.Add(product);
             }
+            //if ok then proceed to place order
             var cfg = new MapperConfiguration(c =>
             {
                 c.CreateMap<CartSummary, Order>();
@@ -144,7 +148,6 @@ namespace EcomMS.BLL.Services
             var mapper = new Mapper(cfg);
             var order = mapper.Map<Order>(obj);
             order.IsDelivered = false;
-            order.Status = 1;
             order.IsReviewed = false;
             order.CreatedAt = DateTime.Now;
             order.UpdatedAt = DateTime.Now;
@@ -167,6 +170,13 @@ namespace EcomMS.BLL.Services
                     product.Quantity -= cart.Quantity;
                     DataAccess.Product.Update(product);
                 }
+                var orderStatus = new OrderStatusHistory()
+                {
+                    OrderId = createdOrder.Id,
+                    Status = "Placed",
+                    CreatedAt = DateTime.Now
+                };
+                DataAccess.OrderStatusHistory.Create(orderStatus);
                 var cartRemoved = DataAccess.Cart.DeleleByCustomerId(obj.CustomerId);
                 if (cartRemoved)
                 {
@@ -175,7 +185,7 @@ namespace EcomMS.BLL.Services
                 }
             }
             msg = "Internal server error";
-            return true;
+            return false;
         }
     }
 }

@@ -117,17 +117,33 @@ namespace EcomMS.BLL.Services
         public bool AddItemToCart(CartDTO obj, out string msg)
         {
             msg = "";
+            if(obj.Quantity > 5)
+            {
+                msg = "Maximum quantity is 5";
+                return false;
+            }
             var currentCart = DataAccess.Cart.Get(c => c.ProductId == obj.ProductId && c.CustomerId == obj.CustomerId);
+            var productInventory = DataAccess.Product.Get(p => p.Id == obj.ProductId);
             if (currentCart != null)
             {
                 currentCart.Quantity += obj.Quantity;
+                if (currentCart.Quantity > productInventory.Quantity || currentCart.Quantity > 5)
+                {
+                    msg = "Product has lower inventory than cart quantity";
+                    return false;
+                }   
                 DataAccess.Cart.Update(currentCart);
-                msg = $"{currentCart.Quantity} of this product in cart now!";
+                msg = $"{currentCart.Quantity} of the product in cart now!";
             }
             else
             {
+                if (obj.Quantity > productInventory.Quantity)
+                {
+                    msg = "Product has lower inventory than cart quantity";
+                    return false;
+                }
                 Create(obj);
-                msg = $"{obj.Quantity} of this product added in cart!";
+                msg = $"{obj.Quantity} of the product added in cart!";
             }
             return true;
         }

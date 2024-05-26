@@ -15,7 +15,7 @@ namespace EcomMS.BLL.DTOs
         public string Status { get; set; }
         public int? CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }
-        public OrderDTO Order { get; set; }
+        //public OrderDTO Order { get; set; }
         public EmployeeDTO Employee { get; set; }
     }
 }

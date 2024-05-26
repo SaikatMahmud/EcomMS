@@ -34,7 +34,11 @@ namespace EcomMS.Web.Controllers
                 Quantity = int.Parse(Request.Form["Quantity"])
             };
             var result = cartService.AddItemToCart(cart, out msg);
-            TempData["success"] = msg;
+            if (result)
+            {
+                TempData["success"] = msg;
+            }
+            else TempData["error"] = msg;
             return RedirectToAction("Index","Home");
         }
         [Route("Cart/increase/{cartId}")]
