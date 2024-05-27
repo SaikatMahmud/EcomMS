@@ -1,53 +1,52 @@
 ﻿@model IEnumerable<ProductImageMapDTO>
-<div class="row">
-    <div class="col-2">
-        <label class="fw-bold" style="text-align: left;">Filter by category</label>
-        <select id="categoryId" asp-items="ViewBag.catList" class="form-select">
-            <option selected>Select category</option>
-            <option value="0">All</option>
-        </select>
+<body onload="LoadHomePage(0)">
+    <div class="row">
+        <div class="col-2">
+            <label class="fw-bold" style="text-align: left;">Search product</label>
+            <input type="text" id="searchText" /><button id="btnSearch"><i class="bi bi-search"></i></button><br/><br/>
+
+            <label class="fw-bold" style="text-align: left;">Filter by category</label>
+            <select id="categoryId" asp-items="ViewBag.catList" class="form-select">
+                <option selected disabled>Select category</option>
+                <option value="0">All</option>
+            </select>
+        </div>
+        <div class="col-10">
+            <div class="render_homePage"></div>
+        </div>
     </div>
-    <div class="col-10">
-        <div class="row pb-3">
-            @if (Model.Count() == 0)
-            {
-                <h2>No products currently! Check back later</h2>
-            }
-            else
-            {
-                @foreach (var product in Model)
-                {
-                    <div class="col-lg-3 col-sm-6">
-                        <div class="row p-2">
-                            <div class="col-12 p-1">
-                                <div class="card border-0 p-3 shadow border-top border-5 rounded">
-                                    @if (product.Images.Count() > 0)
-                                    {
-                                        <img src="@product.Images[0].ImageUrl" class="card-img-top rounded" />
-                                    }
-                                    else
-                                    {
-                                        <img src="https://placehold.co/350x400" width="100%" class="rounded" />
-                                    }
-                                    <div class="card-body pb-0">
-                                        <div class="pl-1">
-                                            <p class="card-title h5 text-dark opacity-75 text-center">@product.Name</p>
-                                        </div>
-                                        <div class="pl-1">
-                                            <p class="text-dark text-opacity-75 text-center">Price <span>@product.Price.ToString("c")</span></p>
-                                        </div>
+</body>
+
+
+
+<script type="text/x-handlebars-template" id="homePageProducts">
+    <div class="row pb-3">
+            {{#each product}}
+                <div class="col-lg-3 col-sm-6">
+                    <div class="row p-2">
+                        <div class="col-12 p-1">
+                            <div class="card border-0 p-3 shadow border-top border-5 rounded">
+                             {{#if images}}
+                                    <img src="{{images.[0].imageUrl}}" class="card-img-top rounded" />
+                             {{else}}
+                                    <img src="https://placehold.co/350x400" width="100%" class="rounded" />
+                             {{/if}}
+                                <div class="card-body pb-0">
+                                    <div class="pl-1">
+                                        <p class="card-title h5 text-dark opacity-75 text-center">{{name}}</p>
                                     </div>
-                                    <div>
-                                        <a href="Product/Details/@product.Id" class="btn btn-primary bg-gradient border-0 form-control">Details</a>
+                                    <div class="pl-1">
+                                        <p class="text-dark text-opacity-75 text-center">Price <span>{{price}} Tk</span></p>
                                     </div>
                                 </div>
-
+                                <div>
+                                    <a href="Product/Details/{{id}}" class="btn btn-primary bg-gradient border-0 form-control">Details</a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                }
-            }
-        </div>
-    </div>
-</div>
+                </div>
+            {{/each}}
+       <div>
+</script>
 <script src="~/js/loadHomePage.js"></script>

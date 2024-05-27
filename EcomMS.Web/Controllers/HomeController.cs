@@ -21,25 +21,54 @@ namespace EcomMS.Web.Controllers
             //_logger = logger;
         }
 
-        public IActionResult Index([FromQuery] int filterbycat)
+        public IActionResult Index([FromQuery] int? filterbycat, [FromQuery] string? search)
         {
-            List<ProductImageMapDTO> result;
-            if(filterbycat == 0)
-            {
-            result = productService.GetAll(p => p.IsLive == true, "Images");
-            }
-            else
-            {
-                result = productService.GetAll(p => p.IsLive == true && p.CategoryId == filterbycat, "Images");
-            }
+            //List<ProductImageMapDTO> result;
+            //if(filterbycat == 0 || filterbycat == null)
+            //{
+            //result = productService.GetAll(p => p.IsLive == true, "Images");
+            //}
+            //else
+            //{
+            //    result = productService.GetAll(p => p.IsLive == true && p.CategoryId == filterbycat, "Images");
+            //}
             IEnumerable<SelectListItem> catList = categoryService.Get().Select(c => new SelectListItem
             {
                 Text = c.Name,
                 Value = c.Id.ToString(),
             });
             ViewBag.catList = catList;
-            return View(result);
+            return View();
         }
+
+        public IActionResult GetHomePageProducts([FromQuery] int? filterbycat, [FromQuery] string search)
+        {
+            List<ProductImageMapDTO> result;
+            if (filterbycat == 0 || filterbycat == null)
+            {
+                if (string.IsNullOrEmpty(search))
+                {
+                    result = productService.GetAll(p => p.IsLive == true, "Images");
+                }
+                else
+                {
+                    result = productService.GetAll(p => p.IsLive == true && p.Name.Contains(search), "Images");
+                }
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(search))
+                {
+                    result = productService.GetAll(p => p.IsLive == true && p.CategoryId == filterbycat, "Images");
+                }
+                else
+                {
+                    result = productService.GetAll(p => p.IsLive == true && p.CategoryId == filterbycat && p.Name.Contains(search), "Images");
+                }
+            }
+            return Json(new { data = result });
+        }
+
         [Route("Product/Details/{id}")]
         public IActionResult ProductDetails(int id)
         {
