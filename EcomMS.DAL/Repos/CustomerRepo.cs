@@ -15,5 +15,12 @@ namespace EcomMS.DAL.Repos
         {
             _db = db;
         }
+
+        public Customer Create(Customer obj)
+        {
+            _db.Customers.Add(obj);
+            if (_db.SaveChanges() > 0) return obj;
+            return null;
+        }
     }
 }

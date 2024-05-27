@@ -10,5 +10,6 @@ namespace EcomMS.DAL.Interfaces
     public interface ICustomer : IRepo<Customer>
     {
         //any extra functionality here if needed
+        Customer Create(Customer obj);
     }
 }

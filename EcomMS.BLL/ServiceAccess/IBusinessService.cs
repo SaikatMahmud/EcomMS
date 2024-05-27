@@ -22,5 +22,6 @@ namespace EcomMS.BLL.ServiceAccess
         public ReviewService ReviewService { get; set; }
         public SupplierProductService SupplierProductService { get; set; }
         public SupplierService SupplierService { get; set; }
+        public UserService UserService { get; set; }
     }
 }

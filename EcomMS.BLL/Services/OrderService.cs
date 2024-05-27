@@ -127,7 +127,7 @@ namespace EcomMS.BLL.Services
             return DataAccess.Order.Delete(data);
         }
 
-        public bool PlaceOrder(CartSummary obj, out string msg)
+        public bool PlaceOrder(CartSummaryVM obj, out string msg)
         {
             msg = string.Empty;
             //first checking if any product has lower inventory than the cart quantity
@@ -146,7 +146,7 @@ namespace EcomMS.BLL.Services
             //if ok then proceed to place order
             var cfg = new MapperConfiguration(c =>
             {
-                c.CreateMap<CartSummary, Order>();
+                c.CreateMap<CartSummaryVM, Order>();
             });
             var mapper = new Mapper(cfg);
             var order = mapper.Map<Order>(obj);

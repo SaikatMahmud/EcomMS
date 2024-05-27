@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace EcomMS.BLL.ViewModels
 {
-    public class CartSummary
+    public class CartSummaryVM
     {
         [ValidateNever]
         public int CustomerId { get; set; }

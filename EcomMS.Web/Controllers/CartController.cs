@@ -66,7 +66,7 @@ namespace EcomMS.Web.Controllers
         {
             var cusId = 2;
             var cartData = cartService.GetAll(ct => ct.CustomerId == cusId, "Product");
-            var cartSummary = new CartSummary();
+            var cartSummary = new CartSummaryVM();
             cartSummary.Carts = cartData;
             var customerData = customerService.Get(c => c.Id == cusId);
             ViewBag.Customer = customerData;

@@ -1,4 +1,5 @@
 ﻿using EcomMS.DAL.Interfaces;
+using EcomMS.DAL.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,5 +22,6 @@ namespace EcomMS.DAL.UnitOfWork
         IReview Review { get; }
         ISupplier Supplier { get; }
         ISupplierProduct SupplierProduct { get; }
+        IUser<User> User { get; }
     }
 }

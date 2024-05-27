@@ -1,5 +1,7 @@
 ﻿using EcomMS.DAL.Interfaces;
+using EcomMS.DAL.Models;
 using EcomMS.DAL.Repos;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +13,8 @@ namespace EcomMS.DAL.UnitOfWork
     public class UnitOfWork : IUnitOfWork
     {
         private readonly ApplicationDbContext _db;
+        private readonly PasswordHasher<object> _passwordHasher;
+
         public ICart Cart { get; private set; }
 
         public ICategory Category { get; private set; }
@@ -34,10 +38,12 @@ namespace EcomMS.DAL.UnitOfWork
         public ISupplier Supplier { get; private set; }
 
         public ISupplierProduct SupplierProduct { get; private set; }
+        public IUser<User> User { get; private set; }
 
-        public UnitOfWork(ApplicationDbContext db)
+        public UnitOfWork(ApplicationDbContext db, PasswordHasher<object> passwordHasher)
         {
             _db = db;
+            _passwordHasher = passwordHasher;
             Cart = new CartRepo(_db);
             Category = new CategoryRepo(_db);
             Customer = new CustomerRepo(_db);
@@ -50,6 +56,7 @@ namespace EcomMS.DAL.UnitOfWork
             Review = new ReviewRepo(_db);
             Supplier = new SupplierRepo(_db);
             SupplierProduct = new SupplierProductRepo(_db);
+            User = new UserRepo(_db, _passwordHasher);
         }
     }
 }

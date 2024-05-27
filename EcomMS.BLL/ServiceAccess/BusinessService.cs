@@ -22,6 +22,8 @@ namespace EcomMS.BLL.ServiceAccess
         public ReviewService ReviewService { get; set; }
         public SupplierProductService SupplierProductService { get; set; }
         public SupplierService SupplierService { get; set; }
+        public UserService UserService { get; set; }
+
         public BusinessService(IUnitOfWork unitOfWork)
         {
             CartService = new CartService(unitOfWork);
@@ -36,6 +38,7 @@ namespace EcomMS.BLL.ServiceAccess
             ReviewService = new ReviewService(unitOfWork);
             SupplierProductService = new SupplierProductService(unitOfWork);
             SupplierService = new SupplierService(unitOfWork);
+            UserService = new UserService(unitOfWork);
 
         }
     }

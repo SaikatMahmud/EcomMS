@@ -1,6 +1,7 @@
 using EcomMS.BLL.ServiceAccess;
 using EcomMS.DAL;
 using EcomMS.DAL.UnitOfWork;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +14,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddScoped<IBusinessService, BusinessService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IPasswordHasher<object>, PasswordHasher<object>();
+
 
 var app = builder.Build();
 

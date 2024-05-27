@@ -23,7 +23,7 @@ namespace EcomMS.Web.Controllers
         }
         [HttpPost]
         [Route("Order/Checkout")]
-        public IActionResult Checkout(CartSummary obj)
+        public IActionResult Checkout(CartSummaryVM obj)
         {
             if (!ModelState.IsValid)
             {

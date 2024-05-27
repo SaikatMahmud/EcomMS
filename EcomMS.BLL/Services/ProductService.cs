@@ -147,8 +147,8 @@ namespace EcomMS.BLL.Services
                 c.CreateMap<ProductDTO, Product>();
             });
             var mapper = new Mapper(cfg);
-            var Product = mapper.Map<Product>(obj);
-            return DataAccess.Product.Create(Product);
+            var product = mapper.Map<Product>(obj);
+            return DataAccess.Product.Create(product);
         }
         public bool Update(ProductDTO obj)
         {

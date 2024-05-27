@@ -27,6 +27,7 @@ namespace EcomMS.DAL
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Supplier> Suppliers { get; set; }  
         public DbSet<SupplierProduct> SupplierProducts { get; set; }
+        public DbSet<User> Users { get; set; }
 
 
     }

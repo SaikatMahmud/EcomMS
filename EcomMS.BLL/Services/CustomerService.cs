@@ -101,7 +101,8 @@ namespace EcomMS.BLL.Services
             });
             var mapper = new Mapper(cfg);
             var Customer = mapper.Map<Customer>(obj);
-            return DataAccess.Customer.Create(Customer);
+            var result = DataAccess.Customer.Create(Customer);
+            return result != null ? true : false;
         }
         //public bool Update(CustomerDTO obj)
         //{
