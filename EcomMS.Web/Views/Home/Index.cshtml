@@ -2,9 +2,13 @@
 <body onload="LoadHomePage(0)">
     <div class="row">
         <div class="col-2">
-            <label class="fw-bold" style="text-align: left;">Search product</label>
-            <input type="text" id="searchText" /><button id="btnSearch"><i class="bi bi-search"></i></button><br/><br/>
-
+            <span class="input-group-append">
+                <input class="form-control border-end-0 border " type="text" placeholder="Search product" id="searchText">
+                <button class="btn btn-outline-primary border-start-0 border ms-n3" type="button" id="btnSearch">
+                        <i class="bi bi-search"></i>
+                </button>
+                    <br /><br />
+            </span>
             <label class="fw-bold" style="text-align: left;">Filter by category</label>
             <select id="categoryId" asp-items="ViewBag.catList" class="form-select">
                 <option selected disabled>Select category</option>
@@ -13,6 +17,7 @@
         </div>
         <div class="col-10">
             <div class="render_homePage"></div>
+            <div id="HomepagePagination-controls"></div>
         </div>
     </div>
 </body>

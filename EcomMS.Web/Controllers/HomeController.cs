@@ -41,32 +41,36 @@ namespace EcomMS.Web.Controllers
             return View();
         }
 
-        public IActionResult GetHomePageProducts([FromQuery] int? filterbycat, [FromQuery] string search)
+        public IActionResult GetHomePageProducts([FromQuery] int? filterbycat, [FromQuery] string search, [FromQuery] int? page)
         {
             List<ProductImageMapDTO> result;
+            int totalCount = 0;
+            int filteredCount = 0;
+            if (page == 0 || page == null) page = 1;
+            int pageNumber = (int)page;
             if (filterbycat == 0 || filterbycat == null)
             {
                 if (string.IsNullOrEmpty(search))
                 {
-                    result = productService.GetAll(p => p.IsLive == true, "Images");
+                    result = productService.GetHomePageProductCustomized(p => p.IsLive == true, (pageNumber - 1) * 12, 12, out totalCount, out filteredCount, "Images");
                 }
                 else
                 {
-                    result = productService.GetAll(p => p.IsLive == true && p.Name.Contains(search), "Images");
+                    result = productService.GetHomePageProductCustomized(p => p.IsLive == true && p.Name.Contains(search), (pageNumber - 1) * 12, 12, out totalCount, out filteredCount, "Images");
                 }
             }
             else
             {
                 if (string.IsNullOrEmpty(search))
                 {
-                    result = productService.GetAll(p => p.IsLive == true && p.CategoryId == filterbycat, "Images");
+                    result = productService.GetHomePageProductCustomized(p => p.IsLive == true && p.CategoryId == filterbycat, (pageNumber - 1) * 12, 12, out totalCount, out filteredCount, "Images");
                 }
                 else
                 {
-                    result = productService.GetAll(p => p.IsLive == true && p.CategoryId == filterbycat && p.Name.Contains(search), "Images");
+                    result = productService.GetHomePageProductCustomized(p => p.IsLive == true && p.CategoryId == filterbycat && p.Name.Contains(search), (pageNumber - 1) * 12, 12, out totalCount, out filteredCount, "Images");
                 }
             }
-            return Json(new { data = result });
+            return Json(new { data = result , totalPage = filteredCount/12+1});
         }
 
         [Route("Product/Details/{id}")]

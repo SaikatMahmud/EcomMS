@@ -44,7 +44,6 @@ namespace EcomMS.BLL.Services
                 c.CreateMap<Product, ProductDTO>();
                 c.CreateMap<Product, ProductImageMapDTO>();
                 c.CreateMap<ProductImage, ProductImageDTO>();
-                //c.CreateMap<Category, CategoryDTO>();
             });
             var mapper = new Mapper(cfg);
             var productFilter = mapper.MapExpression<Expression<Func<Product, bool>>>(filter);
@@ -52,6 +51,28 @@ namespace EcomMS.BLL.Services
             if (data != null)
             {
                 return mapper.Map<List<ProductImageMapDTO>>(data);
+            }
+            return null;
+        }
+        public List<ProductImageMapDTO> GetHomePageProductCustomized(Expression<Func<ProductDTO, bool>> filter, int skip, int take, out int totalCount, out int filteredCount, string? properties = null)
+        {
+            var cfg = new MapperConfiguration(c =>
+            {
+                c.CreateMap<Product, ProductDTO>();
+                c.CreateMap<Product, ProductImageMapDTO>();
+                c.CreateMap<ProductImage, ProductImageDTO>();
+            });
+            var mapper = new Mapper(cfg);
+            var productFilter = mapper.MapExpression<Expression<Func<Product, bool>>>(filter);
+            totalCount = 0;
+            filteredCount = 0;
+            var data = DataAccess.Product.GetCustomizedListData(productFilter, skip, take, properties);
+            if (data.Item1 != null)
+            {
+                totalCount = data.Item2;
+                filteredCount = data.Item3;
+                return mapper.Map<List<ProductImageMapDTO>>(data.Item1);
+
             }
             return null;
         }
