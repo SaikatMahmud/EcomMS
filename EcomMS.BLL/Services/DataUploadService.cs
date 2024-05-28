@@ -30,6 +30,7 @@ namespace EcomMS.BLL.Services
                             Description = row.Cell(5).GetValue<string>(),
                             Specification = row.Cell(6).GetValue<string>(),
                             CategoryId = row.Cell(7).GetValue<int?>(),
+                            IsLive = row.Cell(8).GetValue<bool>(),
                         };
                         products.Add(product);
                     }

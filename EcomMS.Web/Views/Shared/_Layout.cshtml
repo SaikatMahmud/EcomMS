@@ -16,7 +16,7 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-light border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm text-black navbar-light bg-light border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">EcomMS.Web</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -26,15 +26,15 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index"><i class="bi bi-house"></i> Home</a>
                         </li>
                         @if (Accessor.HttpContext.Session.GetString("userType") == "Admin")
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Category" asp-action="Index">Manage_Category</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Category" asp-action="Index"><i class="bi bi-gear"></i> Category</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Product" asp-action="Index">Manage_Product</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Product" asp-action="Index"><i class="bi bi-gear"></i> Product</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Order" asp-action="AllOrder"><i class="bi bi-list-ul"></i> All_Orders</a>
@@ -50,13 +50,13 @@
                         @if (Accessor.HttpContext.Session.GetString("userType") == null)
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Login">Login</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Login"><i class="bi bi-door-open"></i> Login</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Register">Register</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Register"><i class="bi bi-person-plus"></i> Register</a>
                             </li>
                         }
-                        @if (Accessor.HttpContext.Session.GetString("userType") == null || Accessor.HttpContext.Session.GetString("userType") != "Admin")
+                        @if (Accessor.HttpContext.Session.GetString("userType") != null || Accessor.HttpContext.Session.GetString("userType") != "Admin")
                         {
                             <li class="nav-item topnav-right">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Cart" asp-action="Index"><i class="bi bi-cart"></i> Cart</a>
@@ -64,18 +64,15 @@
                         }
                         @if (Accessor.HttpContext.Session.GetString("userType") != null)
                         {
-                            <ul class="topnav-right">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="" asp-action="">Welcome, @Accessor.HttpContext.Session.GetString("username")</a>
-                            </ul>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" href="#">&nbsp;&nbsp;&nbsp; <i class="bi bi-person"></i> Welcome, @Accessor.HttpContext.Session.GetString("username")</a>
+                            </li>
                         }
                         @if (Accessor.HttpContext.Session.GetString("userType") != null)
                         {
-                            <ul class="topnav-right">
-
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Logout">Logout</a>
-                                </li>
-                            </ul>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Logout">Logout <i class="bi bi-box-arrow-right"></i></a>
+                            </li>
                         }
 
                         @* <li class="nav-item">

@@ -23,7 +23,7 @@ namespace EcomMS.Web.Controllers
             return View();
         }
         [HttpPost]
-        [Route("Order/Checkout")]
+        [Route("Order/Checkout")] // place order
         public IActionResult Checkout(CartSummaryVM obj)
         {
             if (!ModelState.IsValid)
@@ -31,7 +31,7 @@ namespace EcomMS.Web.Controllers
                 TempData["error"] = "One or more required fields are invalid";
                 return RedirectToAction("CartSummary", "Cart");
             }
-            obj.CustomerId = 2;
+            obj.CustomerId = (int)HttpContext.Session.GetInt32("userId");
             string msg = string.Empty;
             var result = orderService.PlaceOrder(obj, out msg);
             if (result) TempData["success"] = msg;
@@ -44,7 +44,7 @@ namespace EcomMS.Web.Controllers
         }
         public IActionResult GetOrderHistoryCustomized(int draw, int start, int length, string search, int orderColumn, string orderDirection)
         {
-            int cusId = 2;
+            int cusId = (int)HttpContext.Session.GetInt32("userId");
             int totalCount = 0;
             int filteredCount = 0;
             List<OrderWithStatusHistoriesDTO> result;
@@ -109,6 +109,16 @@ namespace EcomMS.Web.Controllers
         {
             var empId = (int)HttpContext.Session.GetInt32("userId"); ;
             var result = orderStatusHistory.CancelOrderByAdmin(orderId, empId);
+            if (result) return Json(new { success = true, msg = "Order cancelled!" });
+            return Json(new { success = false, msg = "Internal server error" });
+        }
+        
+        [HttpPut]
+        [Route("Order/CancelOrderCustomer/{orderId}")]
+        public IActionResult CancelOrderCustomer(int orderId)
+        {
+            var empId = (int)HttpContext.Session.GetInt32("userId"); ;
+            var result = orderStatusHistory.CancelOrderByCustomer(orderId);
             if (result) return Json(new { success = true, msg = "Order cancelled!" });
             return Json(new { success = false, msg = "Internal server error" });
         }

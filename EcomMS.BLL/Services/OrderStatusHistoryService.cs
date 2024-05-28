@@ -158,6 +158,25 @@ namespace EcomMS.BLL.Services
             };
             return DataAccess.OrderStatusHistory.Create(orderStatus);
         }
+
+        public bool CancelOrderByCustomer(int orderId)
+        {
+            var orderStatus = new OrderStatusHistory()
+            {
+                OrderId = orderId,
+                Status = "Cancelled by Customer",
+                CreatedAt = DateTime.Now,
+            };
+            var orderedProducts = DataAccess.OrderProduct.GetAll(op => op.OrderId == orderId);
+            foreach (var product in orderedProducts)
+            {
+                var productInInventory = DataAccess.Product.Get(p => p.Id == product.ProductId);
+                productInInventory.Quantity += product.Quantity;
+                DataAccess.Product.Update(productInInventory);
+            }
+            return DataAccess.OrderStatusHistory.Create(orderStatus);
+        }
+
         public bool CancelOrderByAdmin(int orderId, int empId)
         {
             var orderStatus = new OrderStatusHistory()
@@ -167,6 +186,13 @@ namespace EcomMS.BLL.Services
                 CreatedBy = empId,
                 CreatedAt = DateTime.Now,
             };
+            var orderedProducts = DataAccess.OrderProduct.GetAll(op => op.OrderId == orderId);
+            foreach (var product in orderedProducts)
+            {
+                var productInInventory = DataAccess.Product.Get(p => p.Id == product.ProductId);
+                productInInventory.Quantity += product.Quantity;
+                DataAccess.Product.Update(productInInventory);
+            }
             return DataAccess.OrderStatusHistory.Create(orderStatus);
         }
         public bool DeliverOrder(int orderId, int empId)

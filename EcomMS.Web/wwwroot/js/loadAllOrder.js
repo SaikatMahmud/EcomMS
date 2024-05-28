@@ -67,7 +67,6 @@ function getFirstStatus(order) {
     }
 }
 function processOrder(orderId) {
-    console.log('Processing order: ' + orderId);
     $.ajax({
         url: '/Order/ProcessOrderAdmin/' + orderId,
         type: 'PUT',
@@ -88,7 +87,6 @@ function processOrder(orderId) {
     });
 }
 function shipOrder(orderId) {
-    console.log('Shipping order: ' + orderId);
     $.ajax({
         url: '/Order/ShipOrderAdmin/' + orderId,
         type: 'PUT',
@@ -109,11 +107,9 @@ function shipOrder(orderId) {
     });
 }
 function viewOrderDeatils(orderId) {
-    console.log('Shipping order: ' + orderId);
     window.location.href = '/Order/OrderDetails/' + orderId;
 }
 function cancelOrderAdmin(orderId) {
-    console.log('Shipping order: ' + orderId);
     $.ajax({
         url: '/Order/CancelOrderAdmin/' + orderId,
         type: 'PUT',

@@ -127,7 +127,12 @@ namespace EcomMS.BLL.Services
             if (currentCart != null)
             {
                 currentCart.Quantity += obj.Quantity;
-                if (currentCart.Quantity > productInventory.Quantity || currentCart.Quantity > 5)
+                if (currentCart.Quantity > 5)
+                {
+                    msg = $"Max quantity is 5. You are trying to add {currentCart.Quantity}";
+                    return false;
+                }  
+                else if (currentCart.Quantity > productInventory.Quantity)
                 {
                     msg = "Product has lower inventory than cart quantity";
                     return false;
