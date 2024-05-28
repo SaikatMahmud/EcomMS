@@ -2,6 +2,7 @@
 using EcomMS.BLL.ServiceAccess;
 using EcomMS.BLL.Services;
 using EcomMS.BLL.ViewModels;
+using EcomMS.Web.Auth;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EcomMS.Web.Controllers
@@ -64,6 +65,7 @@ namespace EcomMS.Web.Controllers
             };
             return Json(response);
         }
+        [AdminAccess]
         public IActionResult AllOrder()
         {
             return View();
@@ -83,12 +85,11 @@ namespace EcomMS.Web.Controllers
             };
             return Json(response);
         }
-
         [HttpPut]
         [Route("Order/ProcessOrderAdmin/{orderId}")]
         public IActionResult ProcessOrderAdmin(int orderId)
         {
-            var empId = 3;
+            var empId = (int)HttpContext.Session.GetInt32("userId"); ;
             var result = orderStatusHistory.ProcessOrder(orderId, empId);
             if (result) return Json(new { success = true, msg = "Order status changed" });
             return Json(new { success = false, msg = "Internal server error" });
@@ -97,7 +98,7 @@ namespace EcomMS.Web.Controllers
         [Route("Order/ShipOrderAdmin/{orderId}")]
         public IActionResult ShipOrderAdmin(int orderId)
         {
-            var empId = 3;
+            var empId = (int)HttpContext.Session.GetInt32("userId"); ;
             var result = orderStatusHistory.ShipOrder(orderId, empId);
             if (result) return Json(new { success = true, msg = "Order status changed" });
             return Json(new { success = false, msg = "Internal server error" });
@@ -106,11 +107,12 @@ namespace EcomMS.Web.Controllers
         [Route("Order/CancelOrderAdmin/{orderId}")]
         public IActionResult CancelOrderAdmin(int orderId)
         {
-            var empId = 3;
+            var empId = (int)HttpContext.Session.GetInt32("userId"); ;
             var result = orderStatusHistory.CancelOrderByAdmin(orderId, empId);
             if (result) return Json(new { success = true, msg = "Order cancelled!" });
             return Json(new { success = false, msg = "Internal server error" });
         }
+
         [HttpGet]
         [Route("Order/OrderDetails/{orderId}")]
         public IActionResult OrderDetails(int orderId)

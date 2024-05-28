@@ -17,7 +17,7 @@ namespace EcomMS.Web.Controllers
         }
         public IActionResult Index()
         {
-            int cusId = 2;
+            var cusId = (int)HttpContext.Session.GetInt32("userId");
             var data = cartService.GetCartWithProduct(ct => ct.CustomerId == cusId, "Product, Product.Images");
             return View(data);
         }
@@ -26,7 +26,7 @@ namespace EcomMS.Web.Controllers
         public IActionResult AddToCart()
         {
             string msg = string.Empty;
-            var cusId = 2;
+            var cusId = (int)HttpContext.Session.GetInt32("userId"); ;
             var cart = new CartDTO()
             {
                 CustomerId = cusId,
@@ -64,7 +64,7 @@ namespace EcomMS.Web.Controllers
 
         public IActionResult CartSummary()
         {
-            var cusId = 2;
+            var cusId = (int)HttpContext.Session.GetInt32("userId"); ;
             var cartData = cartService.GetAll(ct => ct.CustomerId == cusId, "Product");
             var cartSummary = new CartSummaryVM();
             cartSummary.Carts = cartData;

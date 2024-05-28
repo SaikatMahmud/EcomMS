@@ -45,7 +45,11 @@ namespace EcomMS.DAL.Repos
             }
             var user = query.FirstOrDefault();
             var verificationResult = pw.VerifyHashedPassword(username, user.Password, password);
-            if (verificationResult == PasswordVerificationResult.Success) return user;
+            if (verificationResult == PasswordVerificationResult.Success)
+            {
+                user.Password = "*";
+                return user;
+            }
             return null;
         }
 

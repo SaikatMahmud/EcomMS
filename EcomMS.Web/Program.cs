@@ -1,3 +1,4 @@
+using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
 using EcomMS.BLL.ServiceAccess;
 using EcomMS.DAL;
 using EcomMS.DAL.UnitOfWork;
@@ -32,6 +33,8 @@ builder.Services.AddSession(options =>
 
 builder.Services.AddScoped<IBusinessService, BusinessService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddHttpContextAccessor();
+
 
 
 var app = builder.Build();

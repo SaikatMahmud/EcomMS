@@ -23,9 +23,6 @@ namespace EcomMS.Web.Controllers
             //_logger = logger;
         }
 
-
-        [CustomerAccess]
-        //[Authorize]
         public IActionResult Index([FromQuery] int? filterbycat, [FromQuery] string? search)
         {
             //List<ProductImageMapDTO> result;

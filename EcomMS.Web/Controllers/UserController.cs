@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using DocumentFormat.OpenXml.Math;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
+using EcomMS.DAL.Models;
 
 namespace EcomMS.Web.Controllers
 {
@@ -40,6 +41,9 @@ namespace EcomMS.Web.Controllers
             TempData["success"] = "Login successfully";
             var sessionObj = JsonConvert.SerializeObject(user);
             HttpContext.Session.SetString("userLoginDetails", sessionObj);
+            HttpContext.Session.SetString("username", user.Username);
+            HttpContext.Session.SetInt32("userId", user.Id);
+            HttpContext.Session.SetString("userType", user.Type);
             if (!string.IsNullOrEmpty(ReturnUrl))
             {
                 return Redirect(ReturnUrl);
@@ -51,8 +55,11 @@ namespace EcomMS.Web.Controllers
         public IActionResult Logout()
         {
             HttpContext.Session.Remove("userLoginDetails");
+            HttpContext.Session.Remove("username");
+            HttpContext.Session.Remove("userId");
+            HttpContext.Session.Remove("userType");
             TempData["success"] = "You have been logged out";
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Login");
         }
         public IActionResult Register()
         {
@@ -89,6 +96,11 @@ namespace EcomMS.Web.Controllers
             }
             return RedirectToAction("Login");
         }
+        public IActionResult AccessDenied()
+        {
+            
+            return View();
+        }   
 
     }
 }

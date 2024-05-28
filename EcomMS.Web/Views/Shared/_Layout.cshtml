@@ -28,30 +28,58 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Category" asp-action="Index">Category</a>
-                        </li> 
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Product" asp-action="Index">Product</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Cart" asp-action="Index"><i class="bi bi-cart"></i> Cart</a>
-                        </li> 
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Order" asp-action="OrderHistory"><i class="bi bi-clock-history"></i> Orders</a>
-                        </li> 
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Order" asp-action="AllOrder"><i class="bi bi-list-ul"></i> All Orders</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Login">Login</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Register">Register</a>
-                        </li>
+                        @if (Accessor.HttpContext.Session.GetString("userType") == "Admin")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Category" asp-action="Index">Manage_Category</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Product" asp-action="Index">Manage_Product</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Order" asp-action="AllOrder"><i class="bi bi-list-ul"></i> All_Orders</a>
+                            </li>
+                        }
+
+                        @if (Accessor.HttpContext.Session.GetString("userType") == "Customer")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Order" asp-action="OrderHistory"><i class="bi bi-clock-history"></i> Orders</a>
+                            </li>
+                        }
+                        @if (Accessor.HttpContext.Session.GetString("userType") == null)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Login">Login</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Register">Register</a>
+                            </li>
+                        }
+                        @if (Accessor.HttpContext.Session.GetString("userType") == null || Accessor.HttpContext.Session.GetString("userType") != "Admin")
+                        {
+                            <li class="nav-item topnav-right">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Cart" asp-action="Index"><i class="bi bi-cart"></i> Cart</a>
+                            </li>
+                        }
+                        @if (Accessor.HttpContext.Session.GetString("userType") != null)
+                        {
+                            <ul class="topnav-right">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="" asp-action="">Welcome, @Accessor.HttpContext.Session.GetString("username")</a>
+                            </ul>
+                        }
+                        @if (Accessor.HttpContext.Session.GetString("userType") != null)
+                        {
+                            <ul class="topnav-right">
+
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Logout">Logout</a>
+                                </li>
+                            </ul>
+                        }
 
                         @* <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li> *@
                     </ul>
                 </div>
@@ -65,10 +93,10 @@
         </main>
     </div>
 
-   @*  <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2024 - EcomMS.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
+    @*  <footer class="border-top footer text-muted">
+    <div class="container">
+    &copy; 2024 - EcomMS.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    </div>
     </footer> *@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

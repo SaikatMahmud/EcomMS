@@ -1,10 +1,12 @@
 ﻿using EcomMS.BLL.DTOs;
 using EcomMS.BLL.ServiceAccess;
 using EcomMS.BLL.Services;
+using EcomMS.Web.Auth;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EcomMS.Web.Controllers
 {
+    [AdminAccess]
     public class CategoryController : Controller
     {
         private CategoryService categoryService;

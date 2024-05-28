@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace EcomMS.Web.Controllers
 {
+    [AdminAccess]
     public class ProductController : Controller
     {
         private CategoryService categoryService;
@@ -18,7 +19,6 @@ namespace EcomMS.Web.Controllers
             productService = serviceAccess.ProductService;
             webHostEnvironment = _webHostEnvironment;
         }
-        [CustomerAccess]
         public IActionResult Index()
         {
             IEnumerable<SelectListItem> catList = categoryService.Get().Select(c => new SelectListItem
@@ -67,7 +67,6 @@ namespace EcomMS.Web.Controllers
             };
             return Json(response);
         }
-
 
 
         [HttpGet]
