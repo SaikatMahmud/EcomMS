@@ -13,7 +13,6 @@ namespace EcomMS.DAL.UnitOfWork
     public class UnitOfWork : IUnitOfWork
     {
         private readonly ApplicationDbContext _db;
-        private readonly PasswordHasher<object> _passwordHasher;
 
         public ICart Cart { get; private set; }
 
@@ -40,10 +39,9 @@ namespace EcomMS.DAL.UnitOfWork
         public ISupplierProduct SupplierProduct { get; private set; }
         public IUser<User> User { get; private set; }
 
-        public UnitOfWork(ApplicationDbContext db, PasswordHasher<object> passwordHasher)
+        public UnitOfWork(ApplicationDbContext db)
         {
             _db = db;
-            _passwordHasher = passwordHasher;
             Cart = new CartRepo(_db);
             Category = new CategoryRepo(_db);
             Customer = new CustomerRepo(_db);
@@ -56,7 +54,7 @@ namespace EcomMS.DAL.UnitOfWork
             Review = new ReviewRepo(_db);
             Supplier = new SupplierRepo(_db);
             SupplierProduct = new SupplierProductRepo(_db);
-            User = new UserRepo(_db, _passwordHasher);
+            User = new UserRepo(_db);
         }
     }
 }

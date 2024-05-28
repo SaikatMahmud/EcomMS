@@ -18,6 +18,20 @@ namespace EcomMS.Web.Controllers
         {
             return View();
         }
+        [HttpPost]
+        public IActionResult Login(LoginVM obj)
+        {
+            if(!ModelState.IsValid)
+            {
+                return View(obj);
+            }
+            var user = userService.LoginCustomer(obj.Username, obj.Password);
+            if(user != null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            return View();
+        }
         public IActionResult Register()
         {
             return View();
@@ -41,9 +55,17 @@ namespace EcomMS.Web.Controllers
             var result = userService.RegisterCustomer(customerDTO, cr.Username, cr.Password, out isEmailUnique, out isUsernameUnique);
             if (!result)
             {
-
+                if(!string.IsNullOrEmpty(isEmailUnique))
+                {
+                    ModelState.AddModelError("Email", isEmailUnique);
+                }
+                if(!string.IsNullOrEmpty(isUsernameUnique))
+                {
+                    ModelState.AddModelError("Username", isUsernameUnique);
+                }
+                return View(cr);
             }
-            return View();
+            return RedirectToAction("Login");
         }
 
     }

@@ -1,11 +1,13 @@
 ﻿using EcomMS.DAL.Interfaces;
 using EcomMS.DAL.Models;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,16 +16,16 @@ namespace EcomMS.DAL.Repos
     internal class UserRepo : IUser<User>
     {
         private readonly ApplicationDbContext _db;
-        private readonly PasswordHasher<object> _passwordHasher;
-        public UserRepo(ApplicationDbContext db, PasswordHasher<object> passwordHasher)
+        private readonly PasswordHasher<string> pw;
+        public UserRepo(ApplicationDbContext db)
         {
             _db = db;
-            _passwordHasher = passwordHasher;
+            pw = new PasswordHasher<string>();
         }
 
         public User Create(User user)
         {
-            var hashedPassword = _passwordHasher.HashPassword(null, user.Password);
+            var hashedPassword = pw.HashPassword(user.Username, user.Password);
             user.Password = hashedPassword;
             _db.Users.Add(user);
             if (_db.SaveChanges() > 0) return user;
@@ -32,9 +34,8 @@ namespace EcomMS.DAL.Repos
 
         public User Get(string username, string password, string? includeProperties = null)
         {
-            password = _passwordHasher.HashPassword(null, password);
             IQueryable<User> query = _db.Users;
-            query = query.Where(u=> u.Username == username && u.Password == password);
+            query = query.Where(u=> u.Username == username);
             if (!string.IsNullOrEmpty(includeProperties))
             {
                 foreach (var includeProp in includeProperties.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
@@ -42,7 +43,10 @@ namespace EcomMS.DAL.Repos
                     query = query.Include(includeProp);
                 }
             }
-            return query.FirstOrDefault();
+            var user = query.FirstOrDefault();
+            var verificationResult = pw.VerifyHashedPassword(username, user.Password, password);
+            if (verificationResult == PasswordVerificationResult.Success) return user;
+            return null;
         }
 
         public bool IsUsernameUnique(string username)
@@ -55,5 +59,6 @@ namespace EcomMS.DAL.Repos
         {
             throw new NotImplementedException();
         }
+  
     }
 }

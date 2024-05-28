@@ -9,31 +9,31 @@
         <form method="post">
             <div data-mdb-input-init class="form-outline mb-4">
                 <label class="fw-bold">Name</label>
-                <input type="text" class="form-control" placeholder="full name" required/>
+                <input type="text" asp-for="Name" class="form-control" placeholder="full name" required/>
                 <span asp-validation-for="Name" class="text-danger"></span>
 
             </div>
             <div data-mdb-input-init class="form-outline mb-4">
                 <label class="fw-bold">Username</label>
-                <input type="text" class="form-control" placeholder="username" required/>
+                <input type="text" asp-for="Username" class="form-control" placeholder="username" required/>
                 <span asp-validation-for="Username" class="text-danger"></span>
 
             </div>
             <div data-mdb-input-init class="form-outline mb-4">
                 <label class="fw-bold">Mobile</label>
-                <input type="number" class="form-control" required />
+                <input type="number" asp-for="Mobile" class="form-control" required />
                 <span asp-validation-for="Mobile" class="text-danger"></span>
 
             </div>
             <div data-mdb-input-init class="form-outline mb-4">
                 <label class="fw-bold">Email</label>
-                <input type="email" class="form-control" placeholder="email" />
+                <input type="email" asp-for="Email" class="form-control" placeholder="email" />
                 <span asp-validation-for="Email" class="text-danger"></span>
 
             </div>
             <div data-mdb-input-init class="form-outline mb-4">
                 <label class="fw-bold">Password</label>
-                <input type="password" class="form-control" placeholder="password" />
+                <input type="password" asp-for="Password" class="form-control" placeholder="password" />
                 <span asp-validation-for="Password" class="text-danger"></span>
 
             </div>
