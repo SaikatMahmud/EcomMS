@@ -3,6 +3,12 @@ using EcomMS.BLL.ServiceAccess;
 using EcomMS.BLL.Services;
 using EcomMS.BLL.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
+using Newtonsoft.Json;
+using DocumentFormat.OpenXml.Math;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 
 namespace EcomMS.Web.Controllers
 {
@@ -19,18 +25,34 @@ namespace EcomMS.Web.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult Login(LoginVM obj)
+        public IActionResult Login(LoginVM obj, string? ReturnUrl)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return View(obj);
             }
             var user = userService.LoginCustomer(obj.Username, obj.Password);
-            if(user != null)
+            if (user == null)
             {
-                return RedirectToAction("Index", "Home");
+                TempData["error"] = "Invalid username or password!";
+                return View(obj);
             }
-            return View();
+            TempData["success"] = "Login successfully";
+            var sessionObj = JsonConvert.SerializeObject(user);
+            HttpContext.Session.SetString("userLoginDetails", sessionObj);
+            if (!string.IsNullOrEmpty(ReturnUrl))
+            {
+                return Redirect(ReturnUrl);
+            }
+            return RedirectToAction("Index", "Home");
+            //await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,);
+
+        }
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Remove("userLoginDetails");
+            TempData["success"] = "You have been logged out";
+            return RedirectToAction("Index", "Home");
         }
         public IActionResult Register()
         {
@@ -41,7 +63,7 @@ namespace EcomMS.Web.Controllers
         {
             string isEmailUnique = string.Empty;
             string isUsernameUnique = string.Empty;
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return View(cr);
             }
@@ -55,11 +77,11 @@ namespace EcomMS.Web.Controllers
             var result = userService.RegisterCustomer(customerDTO, cr.Username, cr.Password, out isEmailUnique, out isUsernameUnique);
             if (!result)
             {
-                if(!string.IsNullOrEmpty(isEmailUnique))
+                if (!string.IsNullOrEmpty(isEmailUnique))
                 {
                     ModelState.AddModelError("Email", isEmailUnique);
                 }
-                if(!string.IsNullOrEmpty(isUsernameUnique))
+                if (!string.IsNullOrEmpty(isUsernameUnique))
                 {
                     ModelState.AddModelError("Username", isUsernameUnique);
                 }

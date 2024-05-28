@@ -1,6 +1,7 @@
 ﻿using EcomMS.BLL.DTOs;
 using EcomMS.BLL.ServiceAccess;
 using EcomMS.BLL.Services;
+using EcomMS.Web.Auth;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -17,6 +18,7 @@ namespace EcomMS.Web.Controllers
             productService = serviceAccess.ProductService;
             webHostEnvironment = _webHostEnvironment;
         }
+        [CustomerAccess]
         public IActionResult Index()
         {
             IEnumerable<SelectListItem> catList = categoryService.Get().Select(c => new SelectListItem

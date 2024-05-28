@@ -1,7 +1,9 @@
 using EcomMS.BLL.DTOs;
 using EcomMS.BLL.ServiceAccess;
 using EcomMS.BLL.Services;
+using EcomMS.Web.Auth;
 using EcomMS.Web.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Diagnostics;
@@ -21,6 +23,9 @@ namespace EcomMS.Web.Controllers
             //_logger = logger;
         }
 
+
+        [CustomerAccess]
+        //[Authorize]
         public IActionResult Index([FromQuery] int? filterbycat, [FromQuery] string? search)
         {
             //List<ProductImageMapDTO> result;
@@ -72,6 +77,8 @@ namespace EcomMS.Web.Controllers
             }
             return Json(new { data = result , totalPage = filteredCount/12+1});
         }
+
+
 
         [Route("Product/Details/{id}")]
         public IActionResult ProductDetails(int id)
