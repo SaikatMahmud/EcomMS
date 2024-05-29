@@ -29,7 +29,7 @@
                         <div class="row">
                             <h6 class="text-dark">@Model.Name</h6>
                         </div>
-                        @if(Model.CategoryId != null)
+                        @if (Model.CategoryId != null)
                         {
                             <div class="row">
                                 <h6 class="text-dark text-opacity-75 ">Category: @Model.Category.Name</h6>
@@ -43,31 +43,34 @@
                             </div>
                         }
                         <div class="row">
-                                <span class="class=" p-1 col-3 col-lg-2 bg-white fw-bold"">Price <b>@Model.Price.ToString("c")</b></span>
+                            <span class="class=" p-1 col-3 col-lg-2 bg-white fw-bold"">Price <b>@Model.Price.ToString("c")</b></span>
                         </div>
-                        
-                       <br/>
-                        @if(Model.Quantity > 0)
+
+                        <br />
+                        @if (Model.Quantity > 0)
                         {
-                            <div class="row pl-2 mb-3">
-                                <div class="col-md-4">
-                                    <div class="input-group mb-3">
-                                        <span class="input-group-text bg-info text-white border-0 fw-semibold"
-                                              id="inputGroup-sizing-default">
-                                            Count
-                                        </span>
-                                        <input type="number" name="Quantity" value="1" min="1" max="5" class="form-control text-end"
-                                               aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" />
+                            @if (Accessor.HttpContext.Session.GetString("userType") == "Customer")
+                            {
+                                <div class="row pl-2 mb-3">
+                                    <div class="col-md-4">
+                                        <div class="input-group mb-3">
+                                            <span class="input-group-text bg-info text-white border-0 fw-semibold"
+                                                  id="inputGroup-sizing-default">
+                                                Count
+                                            </span>
+                                            <input type="number" name="Quantity" value="1" min="1" max="5" class="form-control text-end"
+                                                   aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" />
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-12 col-md-6 pb-1">
-                                    <button type="submit" class="btn btn-success bg-gradient  w-100 py-2 text-uppercase fw-semibold">
-                                        <i class="bi bi-cart-plus"></i> Add to Cart
-                                    </button>
+                                <div class="row">
+                                    <div class="col-12 col-md-6 pb-1">
+                                        <button type="submit" class="btn btn-success bg-gradient  w-100 py-2 text-uppercase fw-semibold">
+                                            <i class="bi bi-cart-plus"></i> Add to Cart
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
+                            }
                         }
                         else
                         {
@@ -82,12 +85,12 @@
             </div>
             <div class="mb-3">
                 <h6 class="fw-semibold"><u>Specification</u></h6>
-            @if (Model.Specification != null)
-            {
-                <div>
-                    <p class="text-secondary lh-sm">@Html.Raw(Model.Specification)</p>
-                </div>
-            }
+                @if (Model.Specification != null)
+                {
+                    <div>
+                        <p class="text-secondary lh-sm">@Html.Raw(Model.Specification)</p>
+                    </div>
+                }
             </div>
         </div>
     </div>

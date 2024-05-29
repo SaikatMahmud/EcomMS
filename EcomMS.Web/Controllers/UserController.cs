@@ -39,7 +39,7 @@ namespace EcomMS.Web.Controllers
                 //var sessionObj = JsonConvert.SerializeObject(user);
                 //HttpContext.Session.SetString("userLoginDetails", sessionObj);
                 HttpContext.Session.SetString("username", customer.Username);
-                HttpContext.Session.SetInt32("userId", customer.Id);
+                HttpContext.Session.SetInt32("userId", (int)customer.CustomerId);
                 HttpContext.Session.SetString("userType", customer.Type);
                 if (!string.IsNullOrEmpty(ReturnUrl))
                 {
@@ -54,7 +54,7 @@ namespace EcomMS.Web.Controllers
                 //var sessionObj = JsonConvert.SerializeObject(user);
                 //HttpContext.Session.SetString("userLoginDetails", sessionObj);
                 HttpContext.Session.SetString("username", employee.Username);
-                HttpContext.Session.SetInt32("userId", employee.Id);
+                HttpContext.Session.SetInt32("userId", (int)employee.EmployeeId);
                 HttpContext.Session.SetString("userType", employee.Type);
                 if (!string.IsNullOrEmpty(ReturnUrl))
                 {
