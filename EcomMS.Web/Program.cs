@@ -1,10 +1,12 @@
 using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
+using EcomMS.BLL.SendEmail;
 using EcomMS.BLL.ServiceAccess;
 using EcomMS.DAL;
 using EcomMS.DAL.UnitOfWork;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +15,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 
 builder.Services.AddDistributedMemoryCache();
 
@@ -33,6 +36,8 @@ builder.Services.AddSession(options =>
 
 builder.Services.AddScoped<IBusinessService, BusinessService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IMailService, MailService>();
+
 builder.Services.AddHttpContextAccessor();
 
 

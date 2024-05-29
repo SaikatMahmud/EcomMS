@@ -1,4 +1,5 @@
-﻿using EcomMS.BLL.Services;
+﻿using EcomMS.BLL.SendEmail;
+using EcomMS.BLL.Services;
 using EcomMS.DAL.UnitOfWork;
 using System;
 using System.Collections.Generic;
@@ -23,15 +24,16 @@ namespace EcomMS.BLL.ServiceAccess
         public SupplierProductService SupplierProductService { get; set; }
         public SupplierService SupplierService { get; set; }
         public UserService UserService { get; set; }
+        public MailService MailService { get; set; }
 
-        public BusinessService(IUnitOfWork unitOfWork)
+        public BusinessService(IUnitOfWork unitOfWork, IMailService mailService)
         {
             CartService = new CartService(unitOfWork);
             CategoryService = new CategoryService(unitOfWork);
             CustomerService = new CustomerService(unitOfWork);
             EmployeeService = new EmployeeService(unitOfWork);
             OrderProductService = new OrderProductService(unitOfWork);
-            OrderService = new OrderService(unitOfWork);
+            OrderService = new OrderService(unitOfWork, mailService);
             OrderStatusHistoryService = new OrderStatusHistoryService(unitOfWork);
             ProductImageService = new ProductImageService(unitOfWork);
             ProductService = new ProductService(unitOfWork);
@@ -39,7 +41,6 @@ namespace EcomMS.BLL.ServiceAccess
             SupplierProductService = new SupplierProductService(unitOfWork);
             SupplierService = new SupplierService(unitOfWork);
             UserService = new UserService(unitOfWork);
-
         }
     }
 }

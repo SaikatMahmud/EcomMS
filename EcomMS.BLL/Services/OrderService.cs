@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using AutoMapper.Extensions.ExpressionMapping;
 using EcomMS.BLL.DTOs;
+using EcomMS.BLL.SendEmail;
 using EcomMS.BLL.ViewModels;
 using EcomMS.DAL.Models;
 using EcomMS.DAL.UnitOfWork;
@@ -10,6 +11,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Net.Mail;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,9 +21,11 @@ namespace EcomMS.BLL.Services
     public class OrderService
     {
         private readonly IUnitOfWork DataAccess;
-        public OrderService(IUnitOfWork _dataAccess)
+        private readonly IMailService _mailService;
+        public OrderService(IUnitOfWork _dataAccess, IMailService mailService)
         {
             DataAccess = _dataAccess;
+            _mailService = mailService;
         }
         public List<OrderWithStatusHistoriesDTO> Get(string? properties = null)
         {
@@ -181,6 +186,7 @@ namespace EcomMS.BLL.Services
                 };
                 DataAccess.OrderStatusHistory.Create(orderStatus);
                 var cartRemoved = DataAccess.Cart.DeleleByCustomerId(obj.CustomerId);
+                _mailService.OrderConfirmationEmail(obj.CustomerId, createdOrder.Id, createdOrder.Amount);
                 if (cartRemoved)
                 {
                     msg = "Order placed successfully!";
@@ -189,6 +195,6 @@ namespace EcomMS.BLL.Services
             }
             msg = "Internal server error";
             return false;
-        }
+        }       
     }
 }
