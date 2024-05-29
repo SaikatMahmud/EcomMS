@@ -32,29 +32,45 @@ namespace EcomMS.Web.Controllers
             {
                 return View(obj);
             }
-            var user = userService.LoginCustomer(obj.Username, obj.Password);
-            if (user == null)
+            var customer = userService.LoginCustomer(obj.Username, obj.Password);
+            if (customer != null)
             {
-                TempData["error"] = "Invalid username or password!";
-                return View(obj);
+                TempData["success"] = "Login successfully";
+                //var sessionObj = JsonConvert.SerializeObject(user);
+                //HttpContext.Session.SetString("userLoginDetails", sessionObj);
+                HttpContext.Session.SetString("username", customer.Username);
+                HttpContext.Session.SetInt32("userId", customer.Id);
+                HttpContext.Session.SetString("userType", customer.Type);
+                if (!string.IsNullOrEmpty(ReturnUrl))
+                {
+                    return Redirect(ReturnUrl);
+                }
+                return RedirectToAction("Index", "Home");
             }
-            TempData["success"] = "Login successfully";
-            var sessionObj = JsonConvert.SerializeObject(user);
-            HttpContext.Session.SetString("userLoginDetails", sessionObj);
-            HttpContext.Session.SetString("username", user.Username);
-            HttpContext.Session.SetInt32("userId", user.Id);
-            HttpContext.Session.SetString("userType", user.Type);
-            if (!string.IsNullOrEmpty(ReturnUrl))
+            var employee = userService.LoginEmployee(obj.Username, obj.Password);
+            if (employee != null)
             {
-                return Redirect(ReturnUrl);
+                TempData["success"] = "Login successfully";
+                //var sessionObj = JsonConvert.SerializeObject(user);
+                //HttpContext.Session.SetString("userLoginDetails", sessionObj);
+                HttpContext.Session.SetString("username", employee.Username);
+                HttpContext.Session.SetInt32("userId", employee.Id);
+                HttpContext.Session.SetString("userType", employee.Type);
+                if (!string.IsNullOrEmpty(ReturnUrl))
+                {
+                    return Redirect(ReturnUrl);
+                }
+                return RedirectToAction("Index", "Home");
             }
-            return RedirectToAction("Index", "Home");
+
+            TempData["error"] = "Invalid username or password!";
+            return View(obj);
             //await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,);
 
         }
         public IActionResult Logout()
         {
-            HttpContext.Session.Remove("userLoginDetails");
+            //HttpContext.Session.Remove("userLoginDetails");
             HttpContext.Session.Remove("username");
             HttpContext.Session.Remove("userId");
             HttpContext.Session.Remove("userType");
@@ -94,6 +110,7 @@ namespace EcomMS.Web.Controllers
                 }
                 return View(cr);
             }
+            TempData["success"] = "Registration complete";
             return RedirectToAction("Login");
         }
         public IActionResult AccessDenied()

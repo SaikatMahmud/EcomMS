@@ -32,10 +32,10 @@ namespace EcomMS.DAL.Repos
             return null;
         }
 
-        public User Get(string username, string password, string? includeProperties = null)
+        public User GetCustomer(string username, string password, string? includeProperties = null)
         {
             IQueryable<User> query = _db.Users;
-            query = query.Where(u=> u.Username == username);
+            query = query.Where(u=> u.Username == username && u.Type == "Customer");
             if (!string.IsNullOrEmpty(includeProperties))
             {
                 foreach (var includeProp in includeProperties.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
@@ -44,6 +44,28 @@ namespace EcomMS.DAL.Repos
                 }
             }
             var user = query.FirstOrDefault();
+            if (user == null) return null;
+            var verificationResult = pw.VerifyHashedPassword(username, user.Password, password);
+            if (verificationResult == PasswordVerificationResult.Success)
+            {
+                user.Password = "*";
+                return user;
+            }
+            return null;
+        }
+        public User GetEmployee(string username, string password, string? includeProperties = null)
+        {
+            IQueryable<User> query = _db.Users;
+            query = query.Where(u => u.Username == username && u.Type != "Customer");
+            if (!string.IsNullOrEmpty(includeProperties))
+            {
+                foreach (var includeProp in includeProperties.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+                {
+                    query = query.Include(includeProp);
+                }
+            }
+            var user = query.FirstOrDefault();
+            if (user == null) return null;
             var verificationResult = pw.VerifyHashedPassword(username, user.Password, password);
             if (verificationResult == PasswordVerificationResult.Success)
             {

@@ -128,8 +128,10 @@ namespace EcomMS.Web.Controllers
         public IActionResult OrderDetails(int orderId)
         {
             var data = orderProductService.GetAll(op => op.OrderId == orderId, "Product");
+            var order = orderService.Get(o => o.Id == orderId);
             var statusHistory = orderStatusHistory.Get(sh => sh.OrderId == orderId);
             ViewBag.StatusHistory = statusHistory;
+            ViewBag.PaymentMethod = order.PaymentMethod;
             return View(data);
         }
     }

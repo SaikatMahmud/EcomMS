@@ -19,9 +19,10 @@ namespace EcomMS.BLL.Services
         }
         public UserCustomerDTO LoginCustomer(string username, string password)
         {
-            var data = DataAccess.User.Get(username, password, "Customer");
+            var data = DataAccess.User.GetCustomer(username, password, "Customer");
             if (data != null)
             {
+                if (data.Type != "Customer") return null;
                 var cfg = new MapperConfiguration(c =>
                 {
                     c.CreateMap<User, UserCustomerDTO>();
@@ -32,6 +33,24 @@ namespace EcomMS.BLL.Services
             }
             return null;
         }
+
+        public UserEmployeeDTO LoginEmployee(string username, string password)
+        {
+            var data = DataAccess.User.GetEmployee(username, password, "Employee");
+            if (data != null)
+            {
+                if (data.Type != "Admin") return null;
+                var cfg = new MapperConfiguration(c =>
+                {
+                    c.CreateMap<User, UserEmployeeDTO>();
+                    c.CreateMap<Employee, EmployeeDTO>();
+                });
+                var mapper = new Mapper(cfg);
+                return mapper.Map<UserEmployeeDTO>(data);
+            }
+            return null;
+        }
+
         public bool RegisterCustomer(CustomerDTO obj, string username, string password, out string emailUnique, out string usernameUnique)
         {
             emailUnique = string.Empty;

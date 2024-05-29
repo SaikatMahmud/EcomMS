@@ -9,7 +9,8 @@ namespace EcomMS.DAL.Interfaces
 {
     public interface IUser<T>
     {
-        T Get(string username, string password, string? includeProperties = null);
+        T GetCustomer(string username, string password, string? includeProperties = null);
+        T GetEmployee(string username, string password, string? includeProperties = null);
         bool IsUsernameUnique(string username);
         T Create(T obj);
         T Update(T obj);
