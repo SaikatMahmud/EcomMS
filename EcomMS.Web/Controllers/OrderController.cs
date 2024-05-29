@@ -122,7 +122,7 @@ namespace EcomMS.Web.Controllers
             if (result) return Json(new { success = true, msg = "Order cancelled!" });
             return Json(new { success = false, msg = "Internal server error" });
         }
-
+        [LoggedAccess]
         [HttpGet]
         [Route("Order/OrderDetails/{orderId}")]
         public IActionResult OrderDetails(int orderId)

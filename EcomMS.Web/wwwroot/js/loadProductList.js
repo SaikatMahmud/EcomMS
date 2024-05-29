@@ -1,11 +1,13 @@
 ﻿var datatable;
 $(document).ready(function () {
     $('#categoryId').change(function () {
+        $('#customFilter').val("all");
         var selectedValue = $('#categoryId').val();
         datatable.destroy();
         LoadProductList(selectedValue);
     });
     $('#customFilter').change(function () {
+        $("#categoryId").val(0);
         var selectedValue = $('#customFilter').val();
         datatable.destroy();
         var url = "";
